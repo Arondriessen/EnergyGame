@@ -1,7 +1,7 @@
 
 // Consumption
 
-demand = 10;
+demand = 8;
 
 
 
@@ -21,6 +21,12 @@ powerPerc = 0;
 batteryStatus = 0;
 batteryCapacity = 1000;
 batteryCharge = 0;
+
+cellSize = 0;
+xRes = 0;
+yRes = 0;
+xOff = 0;
+yOff = 0;
 
 
 
@@ -97,7 +103,7 @@ function draw() {
 
     if (batteryCharge < batteryCapacity) {
 
-      batteryCharge += (power - demand);
+      batteryCharge = min(1000, batteryCharge + (power - demand));
       batteryStatus = 2;
     }
 
@@ -116,19 +122,29 @@ function draw() {
   income = min(demand, power) * price; // Calculate total income ($/h)
   profit = income - cost;
   powerPerc = round((power / demand) * 100); // Convert power to percentage
-  money += income; // Increase money by income ($/h)
+  money += profit; // Increase money by income ($/h)
 
 
 
-  background(220);
-  textSize(28);
-  textAlign(CENTER, CENTER);
-  fill(0);
-  noStroke();
+  // Drawing
+
+  background(255);
+
+  cellSize = min(width) / 38;
+  xRes = floor(width / cellSize);
+  yRes = floor(height / cellSize);
+  xOff = (width - (xRes * cellSize)) / 2;
+  yOff = (height - (yRes * cellSize)) / 2;
+
+  drawGrid();
 
 
   // Consumption
 
+  textSize(28);
+  textAlign(CENTER, CENTER);
+  fill(0);
+  noStroke();
   text("Demand: " + demand + "MWh", width / 2, 150);
 
 
@@ -196,37 +212,54 @@ function draw() {
 
   fill(0);
   textAlign(CENTER, CENTER);
+  textSize(20);
+
   let prodNum = production.length;
-  let prodW = width / prodNum;
-  let prodH = min(prodW, 100);
-  let y = height - (prodH / 2);
+  let size = 4 * cellSize;
+  let startX = xOff + cellSize;
+  let startY = height - yOff - size - cellSize;
+
+  for (let i = 0; i < floor(((xRes - 2) * cellSize) / size); i++) { // Loop through production facilities
+
+    // Draw box outline
+
+    noFill();
+    stroke(200);
+    rect(startX + (size * i), startY, size, size);
+  }
 
   for (let i = 0; i < prodNum; i++) { // Loop through production facilities
+
+    // Draw text and box fill
 
     fill(0, 180, 0);
     if (production[i][1] == 0) { fill(200, 0, 0); }
     noStroke();
 
-    let x = (prodW * 0.5) + (prodW * i);
-    text(production[i][2] + "MWh - $" + production[i][3] + "/MWh", x, y);
+    let x = startX + (size * (i + 0.5));
+    let y = startY + (size * 0.5);
+    text(production[i][2] + "MWh", x, y - 20);
+    text("$" + production[i][3] + "/MWh", x, y + 20);
 
     let p = production[i][5];
     let off = 0;
 
-    if (p != 0) { off = ((prodW / p[p[2]]) * p[3]); }
+    if (p != 0) { off = ((size / p[p[2]]) * p[3]); }
 
-    rect(x - (prodW / 2), y + (prodH / 2) - 10, prodW - off, 10);
+    rect(x - (size / 2), y + (size / 2) - 6, size - off, 6);
+
+    // Draw box outline
 
     noFill();
     stroke(0);
-
-    rect(x - (prodW / 2), y - (prodH / 2), prodW, prodH);
+    rect(startX + (size * i), startY, size, size);
   }
 
 
   // General
 
   textAlign(LEFT, CENTER);
+  textSize(28);
   fill(0);
   noStroke();
   text("Climate Target Date: " + round(timer) + "%", 20, 50);
@@ -250,5 +283,25 @@ function draw() {
     }
   }
 
+
   timer += timerSpd;
+}
+
+
+function drawGrid() {
+
+  noFill();
+  stroke(240);
+
+  for (let x = 0; x < (xRes + 1); x++) {
+
+    let xx = xOff + (x * cellSize)
+    line(xx, 0, xx, height);
+  }
+
+  for (let y = 0; y < (yRes + 1); y++) {
+
+    let yy = yOff + (y * cellSize)
+    line(0, yy, width, yy);
+  }
 }
