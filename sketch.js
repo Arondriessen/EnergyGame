@@ -1,8 +1,19 @@
 
+
+// General
+
+state = 1; // 0 = menu, 1 = game, 2 = settings
+uiLoaded = 0;
+uiHover = 0;
+uiHover2 = "";
+elementID = "";
+uiSelected = "undefined";
+uiScale = 1;
+
+
 // Consumption
 
 demand = 8;
-
 
 
 // Other
@@ -27,7 +38,6 @@ xRes = 0;
 yRes = 0;
 xOff = 0;
 yOff = 0;
-
 
 
 // Production
@@ -60,6 +70,16 @@ function setup() {
 
   createCanvas(windowWidth, windowHeight);
 
+  // Load UI data from js file
+
+  var script = document.createElement('script');
+  script.onload = function () {
+    uiData = ui.slice();
+    uiLoaded = 1;
+  };
+  script.src = 'ui.js';
+  document.head.appendChild(script);
+
   for (let i = 0; i < production.length; i++) { // Loop through production facilities
 
     if (production[i][5] != 0) { // Check if intermittent
@@ -69,9 +89,26 @@ function setup() {
   }
 }
 
+
 function windowResized() {
 
   resizeCanvas(windowWidth, windowHeight);
+}
+
+
+function mouseClicked() {
+
+  if (uiLoaded == 1) { // Check if UI has loaded yet
+
+    if (uiHover == 1) { // Is mouse on UI element?
+
+      if (uiSelected[3][0] == 1) { // Does the element have a click function?
+
+        uiSelected[3][3]();
+        uiHover = 0;
+      }
+    }
+  }
 }
 
 
@@ -284,6 +321,11 @@ function draw() {
   }
 
 
+  // Draw UI
+
+  drawUI();
+
+
   timer += timerSpd;
 }
 
@@ -303,5 +345,323 @@ function drawGrid() {
 
     let yy = yOff + (y * cellSize)
     line(0, yy, width, yy);
+  }
+}
+
+
+function drawUI() {
+
+  uiHover = 0;
+
+  if (uiLoaded == 1) { // Check if UI has loaded yet
+
+    // Draw UI (Dynamic)
+
+    for (s = 0; s < uiData[state].length; s++) { // Cycle through UI states (starting with the default one)
+
+      aa = uiData[state][s]; // Load state
+
+      let subStateEnabled = 0;
+
+      if (typeof aa[0] === "function") { subStateEnabled = aa[0](); } else { subStateEnabled = aa[0]; }
+
+      if (subStateEnabled) { // Check if state is enabled
+
+        for (i = 1; i < aa.length; i++) { // Cycle through UI elements
+
+          a = aa[i].slice(); // Load UI element (doesn't work without slice for some reason)
+
+          limit = 2;
+          hNum = 1;
+          vNum = 1;
+          vNum2 = 1;
+          xOff = 0;
+          yOff = 0;
+          xOff2 = 0;
+          yOff2 = 0;
+          listHAlign =  0;
+          listVAlign =  0;
+
+          if (a[0] == 2) { // Is it a list item?
+
+            limit = a[1][15]();
+            hNum = Math.min(a[1][16](), limit);
+            vNum2 = Math.ceil(limit / a[1][16]());
+            vNum = Math.max(vNum2, a[1][17]());
+            xOff = a[1][18]();
+            yOff = a[1][19]();
+            xOff2 = a[1][20]();
+            yOff2 = a[1][21]();
+            listHAlign =  a[1][22];
+            listVAlign =  a[1][23];
+          }
+
+          for (v = 0; v < vNum2; v++) { // Cycle through rows
+
+            for (h = 0; h < hNum; h++) { // Cycle through columns
+
+              if (((v * hNum) + h) == limit) { break; }
+
+              a = aa[i].slice(); // Reload UI element (doesn't work without slice for some reason)
+
+              for (x = 1; x < a.length; x++) { // Cycle through UI parameter groups
+
+                a[x] = a[x].slice();
+
+                for (y = 0; y < a[x].length; y++) { // Cycle throug element parameters
+
+                  if (typeof a[x][y] === "function") { // Check if parameter is a function
+
+                    if (((x == 3) && ((y == 1) || (y == 2) || (y == 3))) == 0) { // Exclude hover/click functions which should stay functions
+
+                      a[x][y] = a[x][y](); // If it is, store the function's return value
+                    }
+
+                  } else if (typeof a[x][y] === "object") { // Check if parameter is an array
+
+                    if (a[1][15] != undefined) {
+
+                      if (a[x][y].length < a[1][15]()) {
+
+                        let temp = a[x][y][1];
+                        a[x][y].length = 0;
+
+                        for (z = 0; z < (a[1][15]()); z++) {
+
+                          a[x][y].push(temp);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              // Variables for drawing UI elements
+
+              boxW = a[1][4];
+              boxH = a[1][5];
+              boxOp = a[1][9];
+              if (typeof boxOp === "object") { boxOp = a[1][9][((v * hNum) + h)]; }
+              if (typeof boxOp === "function") { boxOp = boxOp(); }
+              boxOutlineOp = a[1][12];
+              if (a[4] != undefined) { imgOp = a[4][3]; }
+
+
+              // Moves drawing start position to top-left corner regardless of alignments
+
+              xx = (a[1][2] - (a[1][6] * boxW)) - ((hNum - 1) * (xOff * listHAlign)) - ((vNum - 1) * (xOff2 * listHAlign)) + (xOff * h) + (xOff2 * v);
+              yy = (a[1][3] - (a[1][7] * boxH)) - ((hNum - 1) * (yOff * listVAlign)) - ((vNum - 1) * (yOff2 * listVAlign)) + (yOff * h) + (yOff2 * v);
+
+              hAlign = a[1][6];
+              vAlign = a[1][7];
+
+
+              if (a[3][0] == 1) { // Is it interactive?
+
+                // Is the mouse on a UI element? (New)
+
+                let mouseIsOnElement = 0;
+
+                if (a[1][1] < 4) { // Rectangular hitbox
+
+                  if ((mouseX > xx) && (mouseX < (xx + boxW))) {
+
+                    if ((mouseY > yy) && (mouseY < (yy + boxH))) {
+
+                      mouseIsOnElement = 1;
+                    }
+                  }
+                } else if  (a[1][1] == 4){ // Rotated Rectangular Hitbox
+
+                  if ((abs(mouseX - (xx + (boxW * (1 - hAlign)))) + abs(mouseY - (yy + (boxH * (1 - vAlign))))) < (boxW)) {
+
+                    mouseIsOnElement = 1;
+                  }
+                }
+
+                elementID = (str(s) + "-" + str(i) + "-" + str(v) + "-" + str(h));
+
+                if (mouseIsOnElement) {
+
+                  if (uiHover2 != elementID) {
+
+                    if (uiSelected != "undefined") {
+                      if (uiSelected[3][2] != 0) {
+
+                        uiSelected[3][2]();
+                        //console.log("Hover Out 2");
+                      }
+                    }
+                  }
+
+                  uiHover = 1;
+                  uiSelected = a;
+                  uiSelectedIndex = ((v * hNum) + h + 1);
+
+                  if (uiSelected[3][1] != 0) {
+
+                    uiSelected[3][1]();
+                    //if (uiHover2 != elementID) { console.log("Hover In"); }
+                  }
+
+                  uiHover2 = elementID;
+
+                } else {
+
+                  if (uiHover2 == elementID) {
+
+                    uiHover2 = "";
+                  }
+                }
+              }
+
+
+              // Reset positions to take alignment into account
+
+              xx = (a[1][2]) - ((hNum - 1) * (xOff * listHAlign)) - ((vNum - 1) * (xOff2 * listHAlign)) + (xOff * h) + (xOff2 * v);
+              yy = (a[1][3]) - ((hNum - 1) * (yOff * listVAlign)) - ((vNum - 1) * (yOff2 * listVAlign)) + (yOff * h) + (yOff2 * v);
+
+
+              push();
+              translate(xx, yy);
+
+              if (a[1][14] != 0) { // Apply rotation if applicable
+
+                angleMode(DEGREES);
+                rotate(a[1][14]);
+              }
+
+
+              if (a[1][0] == 1) { // Is box element active?
+
+                let ccc = a[1][8];
+                let cccc = ccc;
+
+                if (typeof ccc === "object") {
+
+                  cccc = color(ccc.levels[0], ccc.levels[1], ccc.levels[2], boxOp);
+
+                } else {
+
+                  cccc = color(ccc, ccc, ccc, boxOp);
+                }
+
+                fill(cccc);
+
+                //if (a[0] == 2) { if (uiSelected == a) { fill(a[1][8], a[3][1]()); } }
+
+                if (a[1][10] == 1) {
+
+                  stroke(a[1][11], boxOutlineOp);
+                  strokeWeight(a[1][13]);
+
+                } else {
+
+                  noStroke();
+                }
+
+
+                // Draw element box
+
+                rectMode(CORNER);
+
+                switch(a[1][1]) {
+
+                  case 1: rect(- (boxW * hAlign), - (boxH * vAlign), boxW, boxH);
+                  break;
+
+                  case 2: rect(- (boxW * hAlign), - (boxH * vAlign), boxW, boxH, min(boxW, boxH) / 3.4);
+                  break;
+
+                  case 3: circle(0, 0, boxW);
+                  break;
+
+                  case 4:
+                  quad(- (boxW * hAlign) + (boxW * (1 - hAlign)), - ((boxH * 2) * vAlign),
+                  ((boxW * 2) * (1 - hAlign)), - (boxH * vAlign) + (boxH * (1 - vAlign)),
+                  - (boxW * hAlign) + (boxW * (1 - hAlign)), ((boxH * 2) * (1 - vAlign)),
+                  - ((boxW * 2) * hAlign), - (boxH * vAlign) + (boxH * (1 - vAlign)));
+                  break;
+                }
+
+              } else {
+
+                noFill();
+                noStroke();
+              }
+
+
+              if (a[2][0] == 1) { // Is text element active?
+
+
+                // Draw element text
+
+                let ccc = a[2][3];
+                let cccc = ccc;
+
+                if (typeof ccc === "object") {
+
+                  cccc = color(ccc.levels[0], ccc.levels[1], ccc.levels[2], a[2][4]);
+
+                } else {
+
+                  cccc = color(ccc, ccc, ccc, a[2][4]);
+                }
+
+                fill(cccc);
+
+                textFont(fontRegular);
+                if (a[2][7] != undefined) { textFont(a[2][7]); }
+                textSize(a[2][2]);
+                //if (a[2][4] != -1) { fill(a[2][3], a[2][4]); } else { fill(a[2][3]); }
+                noStroke();
+                textAlign(LEFT, TOP);
+
+                let hA = (((boxW * (1 + (a[1][1] == 4))) * a[2][5]) - (textWidth(a[2][1]) * a[2][5])); // Horizontal aligning
+                let vA = (((boxH * (1 + (a[1][1] == 4))) * a[2][6]) - (a[2][2] * a[2][6])); // Vertical aligning
+                let vC = -(a[2][2] / 7); // Small vertical correction for font height
+
+                text(a[2][1], hA - ((boxW * (1 + (a[1][1] == 4))) * hAlign), vA + vC - ((boxH * (1 + (a[1][1] == 4))) * vAlign));
+
+              }
+
+
+              if (a[4] != undefined) {
+
+                if (a[4][0] == 1) { // Is image element active?
+
+                  let ww = a[4][2];
+                  let hh = a[4][2];
+                  if (a[4][3] != 0) { hh = a[4][3]; }
+                  let hA = (((boxW * (1 + (a[1][1] == 4))) * a[4][4]) - (ww / 2)); // Horizontal aligning
+                  let vA = (((boxH * (1 + (a[1][1] == 4))) * a[4][5]) - (hh / 2)); // Vertical aligning
+
+                  image(a[4][1], hA - ((boxW * (1 + (a[1][1] == 4))) * hAlign), vA - ((boxH * (1 + (a[1][1] == 4))) * vAlign), ww, hh); // ***** Causes fatal error in firefox only *****
+                }
+              }
+
+
+              pop(); // Reset translate/rotation
+            }
+          }
+        }
+      }
+    }
+
+    // Reset hover effect if not hovering on UI anymore
+
+    if (uiHover == 0) {
+
+      if (uiSelected != "undefined") {
+
+        if (uiSelected[3][2] != 0) {
+
+          uiSelected[3][2]();
+          uiSelected = "undefined";
+
+          //console.log("Hover Out 1");
+        }
+      }
+    }
   }
 }
