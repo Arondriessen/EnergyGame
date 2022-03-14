@@ -28,10 +28,13 @@ timer = 0;
 timerSpd = 0.01;
 greenScore = 0;
 powerPerc = 0;
+produced = 0;
+powerUsed = 0;
 
 batteryStatus = 0;
 batteryCapacity = 1000;
 batteryCharge = 0;
+batteryInOut = 0;
 
 cellSize = 0;
 xRes = 0;
@@ -39,40 +42,109 @@ yRes = 0;
 xOff = 0;
 yOff = 0;
 
+hoveringOnFacility = -1;
+hoveringOnNewFacility = 0;
+
+colours = [];
+
 
 // Production
 
 production = [
 
   /*
-    0 = enabled/disabled
-    1 = active/inactive
-    2 = output
-    3 = production cost for total output (maybe change to cost/MW?)
-    4 = green or not
-    5 = intermittent
-      5.1 = on duration
-      5.2 = off duration
-      5.3 = status
-      5.4 = timer
+    0 - Type
+    1 - Current details
+      0 - Enabled/disabled/under construction
+      1 - Active/inactive
+      2 - Level (or details on what's been upgraded)
+      3 - Output
+      4 - Cost
+      5 - Intermittent stuff
+        0 - On duration
+        1 - Off duration
+        2 - Status
+        3 - Timer
+      6 - Impact
+    2 - History
+      TBD
   */
-
-  [ 1, 1, 3, 9, 0, 0 ],
-  [ 1, 1, 2, 8, 1, 0 ],
-  [ 1, 1, 5, 7, 1, [180, 180, 0, 0]],
-  [ 1, 1, 4, 6, 1, [600, 300, 0, 0]]
 ];
 
 intermittentSources = [];
 
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+
+
+function preload() {
+
+  // Fonts
+
+  fontRegular = loadFont('assets/Lora-Regular.ttf');
+  fontBold = loadFont('assets/Lora-Bold.ttf');
+  fontMedium = loadFont('assets/Lora-Medium.ttf');
+  fontSemibold = loadFont('assets/Lora-SemiBold.ttf');
+
+  latoRegular = loadFont('assets/Lato-Regular.ttf');
+  latoBold = loadFont('assets/Lato-Bold.ttf');
+}
+
+
 
 function setup() {
 
+  productionTypes = [
+
+    /*
+      0 - Default
+        0 - Info
+          1 - - Name
+          2 - Colour
+          3 - Icon
+        1 - Build details
+          0 - Cost
+          1 - Impact
+          2 - Time
+        2 - Running Details
+          0 - Output
+          1 - Cost (/MWh)
+          2 - Intermittent stuff
+            0 - On duration
+            1 - Off duration
+          3 - Impact
+    */
+
+    [ // Coal
+
+      [ // Default
+
+        ["Coal Plant", color(0, 0, 0), 0],
+        [100, 0, 300],
+        [5, 6, 0, 0]
+      ]
+    ],
+
+    [ // Wind
+
+      [ // Default
+
+        ["Wind Farm", color(140, 198, 63), 0],
+        [100, 0, 300],
+        [5, 8, [180, 90], 0]
+      ]
+    ],
+  ]
+
   createCanvas(windowWidth, windowHeight);
+
+  calcLayout(); // Has to be done before UI is loaded (unless UI is refreshed)
+
+  createTestFacilities();
 
   // Load UI data from js file
 
-  var script = document.createElement('script');
+  script = document.createElement('script');
   script.onload = function () {
     uiData = ui.slice();
     uiLoaded = 1;
@@ -80,14 +152,23 @@ function setup() {
   script.src = 'ui.js';
   document.head.appendChild(script);
 
+
   for (let i = 0; i < production.length; i++) { // Loop through production facilities
 
-    if (production[i][5] != 0) { // Check if intermittent
+    if (production[i][1][5] != 0) { // Check if intermittent
 
       intermittentSources.push(i);
     }
   }
+
+  colours = [
+    color(0, 0, 0),
+    color(57, 181, 74),
+    color(237, 28, 36),
+    color(131, 204, 138)
+  ]
 }
+
 
 
 function windowResized() {
@@ -96,67 +177,104 @@ function windowResized() {
 }
 
 
+
 function mouseClicked() {
 
-  if (uiLoaded == 1) { // Check if UI has loaded yet
+  if (mouseButton === LEFT) {
 
-    if (uiHover == 1) { // Is mouse on UI element?
+    if (hoveringOnFacility > -1) {
 
-      if (uiSelected[3][0] == 1) { // Does the element have a click function?
+      production.splice(hoveringOnFacility, 1);
+      hoveringOnFacility = -1;
+    }
 
-        uiSelected[3][3]();
-        uiHover = 0;
+    if (hoveringOnNewFacility == 1) {
+
+      production.push(createFacilityFromTemplate(1));
+      intermittentSources.push(production.length - 1);
+      hoveringOnFacility = 0;
+    }
+
+    // Dynamic UI
+
+    if (uiLoaded == 1) { // Check if UI has loaded yet
+
+      if (uiHover == 1) { // Is mouse on UI element?
+
+        if (uiSelected[3][0] == 1) { // Does the element have a click function?
+
+          uiSelected[3][3]();
+          uiHover = 0;
+        }
       }
     }
+
   }
+
+  /*if (mouseButton === RIGHT) {
+
+    production.splice(production.length - 1, 1);
+  }*/
 }
+
 
 
 function draw() {
 
   power = 0;
+  produced = 0;
   powerPerc = 0;
   income = 0;
   profit = 0;
   greenScore = 0;
   batteryStatus = 0;
+  batteryIn = 0;
+  batteryOut = 0;
+
+
+
+  // Simulation stuff
 
   let cost = 0;
 
   for (let i = 0; i < production.length; i++) { // Loop through production facilities
 
-    if (production[i][0]) { // Check if enabled
+    if (production[i][1][0]) { // Check if enabled
 
-      if (production[i][1]) { // Check if active
+      if (production[i][1][1]) { // Check if active
 
-        power += production[i][2]; // Add facility output to total power
-        greenScore += (production[i][2] * production[i][4]); // Add output to green score (if its green)
-        cost += (production[i][2] * production[i][3]); // Add running costs to total running costs ($/h)
+        produced += production[i][1][3]; // Add facility output to total power
+        //greenScore += (production[i][1][2] * production[i][4]); // Add output to green score (if its green)
+        cost += (production[i][1][3] * production[i][1][4]); // Add running costs to total running costs ($/h)
       }
     }
   }
 
-  if (power > demand) {
+  power = produced;
 
-    if (batteryCharge < batteryCapacity) {
+  if (power > demand) { // Overpowered
 
-      batteryCharge = min(1000, batteryCharge + (power - demand));
-      batteryStatus = 2;
+    if (batteryCharge < batteryCapacity) { // Battery is not fully charged
+
+      batteryIn = power - demand;
+      batteryCharge = min(1000, batteryCharge + batteryIn);
+      batteryStatus = 1;
     }
 
-  } else if (power < demand) {
+  } else if (power < demand) { // Underpowered
 
-    if (batteryCharge > 0) {
+    if (batteryCharge > 0) { // Battery has charge
 
-      let num = min(demand - power, batteryCharge);
-      power += num;
-      batteryCharge -= num;
-      batteryStatus = 1;
+      batteryOut = min(demand - power, batteryCharge);
+      power += batteryOut;
+      batteryCharge -= batteryOut;
+      batteryStatus = 2;
     }
   }
 
-  greenScore = round((greenScore / power) * 100); // Calculate total green score (%)
-  income = min(demand, power) * price; // Calculate total income ($/h)
+  powerUsed = min(demand, power);
+  //greenScore = round((greenScore / power) * 100); // Calculate total green score (%)
+  income = powerUsed * price; // Calculate total income ($/h)
   profit = income - cost;
   powerPerc = round((power / demand) * 100); // Convert power to percentage
   money += profit; // Increase money by income ($/h)
@@ -167,53 +285,15 @@ function draw() {
 
   background(255);
 
-  cellSize = min(width) / 38;
-  xRes = floor(width / cellSize);
-  yRes = floor(height / cellSize);
-  xOff = (width - (xRes * cellSize)) / 2;
-  yOff = (height - (yRes * cellSize)) / 2;
-
   drawGrid();
-
-
-  // Consumption
-
-  textSize(28);
-  textAlign(CENTER, CENTER);
-  fill(0);
-  noStroke();
-  text("Demand: " + demand + "MWh", width / 2, 150);
-
 
 
   // Distribution
 
-  textAlign(LEFT, CENTER);
-  fill(0);
-  if (batteryStatus == 0) { text("Battery: " + "OFF", 100, (height / 2) - 50); }
-  else { if (batteryStatus == 1) { fill(200, 0, 0); text("Battery: " + "Discharging", 100, (height / 2) - 50); }
-  else { fill(0, 180, 0); text("Battery: " + "Charging", 100, (height / 2) - 50); }}
-
-  let yy = height / 2;
-  let h = 200;
-  let hh = (h / batteryCapacity) * batteryCharge;
-
-  rect(20, yy - (h / 2) + ((h - hh)), 50, hh);
-  noFill();
-  stroke(0);
-  rect(20, yy - (h / 2), 50, h);
-
-  fill(0);
-  noStroke();
-  text("Capacity: " + round(batteryCapacity), 100, (height / 2));
-  text("Charge: " + round(batteryCharge) + " (" + round((batteryCharge / batteryCapacity) * 100) + "%)", 100, (height / 2) + 50);
-
-
-  fill(0, 180, 0);
   if (powerPerc < 100) {
 
-    fill(200, 0, 0);
     publicRage += 0.01;
+
   } else {
 
     if (publicRage > 0) {
@@ -221,13 +301,6 @@ function draw() {
       publicRage -= 0.005; // This should be made dynamic based on level/frequency of outage(s)
     }
   }
-  textAlign(CENTER, CENTER);
-  text("Power: " + powerPerc + "%", width / 2, (height / 2) - 50);
-  fill(0);
-  text("Total Output: " + power + "MWh", width / 2, (height / 2));
-  text("Energy Price: " + "$" + price + "/MWh", width / 2, (height / 2) + 50);
-  text("Public Anger: " + round(publicRage) + "%", width / 2, (height / 2) + 100);
-
 
   textAlign(RIGHT, CENTER);
   fill(0, 180, 0);
@@ -244,52 +317,120 @@ function draw() {
   text("Profit: " + "$" + profit + "/h", width - 100, (height / 2) + 100);
 
 
-
   // Production
 
   fill(0);
   textAlign(CENTER, CENTER);
-  textSize(20);
+  textFont(latoRegular);
 
   let prodNum = production.length;
-  let size = 4 * cellSize;
-  let startX = xOff + cellSize;
-  let startY = height - yOff - size - cellSize;
+  let rangeX = 12;
+  let rangeY = 4;
+  let startX = (width / 2) - (cellSize * (rangeX / 2));
+  let startY = height - yOff - (cellSize * rangeY);
+  let hoveringDel = 0;
 
-  for (let i = 0; i < floor(((xRes - 2) * cellSize) / size); i++) { // Loop through production facilities
+  for (let i = 0; i < rangeX; i++) { // Loop through production places
 
-    // Draw box outline
+    for (let y = 0; y < rangeY; y++) {
 
-    noFill();
-    stroke(200);
-    rect(startX + (size * i), startY, size, size);
+      let prod = i + (y * rangeX);
+
+      let xx = startX + (cellSize * (i + 0.5));
+      let yy = startY + (cellSize * (y + 0.5));
+
+      if (prod < prodNum) {
+
+        // Placed production facility
+
+        if ((mouseX > (xx - (cellSize / 2))) && (mouseX < (xx + (cellSize / 2)))) {
+
+          if ((mouseY > (yy - (cellSize / 2))) && (mouseY < (yy + (cellSize / 2)))) {
+
+            // If mouse is hovering over
+
+            hoveringDel = 1;
+            hoveringOnFacility = prod;
+          }
+        }
+
+        // Draw text and box fill
+
+        fill(productionTypes[production[i][0]][0][0][1]);
+        if (production[i][1][1] == 0) { fill(230); }
+        noStroke();
+        rect(startX + (cellSize * i) + (cellSize / 4), startY + (cellSize * y) + (cellSize / 4), (cellSize / 2),  (cellSize / 2));
+
+        let p = production[i][1][5];
+        let off = 0;
+        let rev = (p[2] * -1) + 1;
+        let barSize = cellSize / 2;
+
+        if (p != 0) { off = ((barSize / p[rev]) * p[3]); }
+
+        rect(xx - (barSize / 2), yy + (cellSize / 3), barSize - off, 6);
+
+        fill(255);
+        textSize(20);
+        text(production[i][1][3], xx, yy - (cellSize / 32));
+        fill(0);
+        textSize(13);
+        text("$" + production[i][1][4] + "/MWh", xx, yy - ((cellSize / 8) * 3));
+
+        // Draw box outline
+
+        noFill();
+        stroke(0);
+        //rect(xx - (cellSize * 0.5), yy - (cellSize * 0.5), cellSize, cellSize);
+
+      } else if (prod == prodNum) {
+
+        // First empty lot
+
+        let hovering = 0;
+        let boxSize = (cellSize / 4);
+
+        if ((mouseX > (xx - (cellSize / 2))) && (mouseX < (xx + (cellSize / 2)))) {
+
+          if ((mouseY > (yy - (cellSize / 2))) && (mouseY < (yy + (cellSize / 2)))) {
+
+            // If mouse is hovering over
+
+            hovering = 1;
+            hoveringOnNewFacility = 1;
+          }
+        }
+
+        if (hovering == 0) {
+
+          hoveringOnNewFacility = 0;
+        }
+
+        noFill();
+        stroke(230);
+        if (hoveringOnNewFacility) { stroke(0); }
+        rect(xx - boxSize, yy - boxSize, (boxSize * 2),  (boxSize * 2));
+
+        stroke(0);
+        line(xx - (cellSize / 8), yy, xx + (cellSize / 8), yy);
+        line(xx, yy - (cellSize / 8), xx, yy + (cellSize / 8));
+
+      } else {
+
+        // Empty lots
+
+        // Draw boxes
+
+        noStroke();
+        fill(240);
+        rect(startX + (cellSize * i) + (cellSize / 4), startY + (cellSize * y) + (cellSize / 4), (cellSize / 2),  (cellSize / 2));
+      }
+    }
   }
 
-  for (let i = 0; i < prodNum; i++) { // Loop through production facilities
+  if (hoveringDel == 0) {
 
-    // Draw text and box fill
-
-    fill(0, 180, 0);
-    if (production[i][1] == 0) { fill(200, 0, 0); }
-    noStroke();
-
-    let x = startX + (size * (i + 0.5));
-    let y = startY + (size * 0.5);
-    text(production[i][2] + "MWh", x, y - 20);
-    text("$" + production[i][3] + "/MWh", x, y + 20);
-
-    let p = production[i][5];
-    let off = 0;
-
-    if (p != 0) { off = ((size / p[p[2]]) * p[3]); }
-
-    rect(x - (size / 2), y + (size / 2) - 6, size - off, 6);
-
-    // Draw box outline
-
-    noFill();
-    stroke(0);
-    rect(startX + (size * i), startY, size, size);
+    hoveringOnFacility = -1;
   }
 
 
@@ -303,20 +444,28 @@ function draw() {
   text("Carbon Neutral Sources: " + greenScore + "%", 20, 100);
 
 
+  // Update intermittent sources
+
   for (let i = 0; i < intermittentSources.length; i++) {
 
-    let p = production[intermittentSources[i]][5];
+    let pp = production[intermittentSources[i]];
 
-    if (p[3] > 0) {
+    if (pp != undefined) {  ///////// CLEAR REFERENCES TO DELETED OBJECTS /////////
 
-      p[3]--;
+      let p = pp[1][5];
 
-    } else {
+      if (p[3] > 0) {
 
-      p[2] = (p[2] * -1) + 1;
-      p[3] = p[p[2]];
+        p[3]--;
 
-      production[intermittentSources[i]][1] = (p[2] * - 1) + 1; // Toggle power status
+      } else {
+
+        let toggle = (p[2] * -1) + 1;
+        p[3] = p[p[2]];
+        p[2] = toggle;
+
+        production[intermittentSources[i]][1][1] = toggle; // Toggle power status
+      }
     }
   }
 
@@ -330,7 +479,10 @@ function draw() {
 }
 
 
+
 function drawGrid() {
+
+  calcLayout();
 
   noFill();
   stroke(240);
@@ -347,6 +499,18 @@ function drawGrid() {
     line(0, yy, width, yy);
   }
 }
+
+
+
+function calcLayout() {
+
+  cellSize = height / 12;
+  xRes = (ceil(floor(width / cellSize) / 2)) * 2;
+  yRes = floor(height / cellSize);
+  xOff = (width - (xRes * cellSize)) / 2;
+  yOff = (height - (yRes * cellSize)) / 2;
+}
+
 
 
 function drawUI() {
@@ -384,16 +548,16 @@ function drawUI() {
 
           if (a[0] == 2) { // Is it a list item?
 
-            limit = a[1][15]();
-            hNum = Math.min(a[1][16](), limit);
-            vNum2 = Math.ceil(limit / a[1][16]());
-            vNum = Math.max(vNum2, a[1][17]());
-            xOff = a[1][18]();
-            yOff = a[1][19]();
-            xOff2 = a[1][20]();
-            yOff2 = a[1][21]();
-            listHAlign =  a[1][22];
-            listVAlign =  a[1][23];
+            limit = a[1][16]();
+            hNum = Math.min(a[1][17](), limit);
+            vNum2 = Math.ceil(limit / a[1][17]());
+            vNum = Math.max(vNum2, a[1][18]());
+            xOff = a[1][19]();
+            yOff = a[1][20]();
+            xOff2 = a[1][21]();
+            yOff2 = a[1][22]();
+            listHAlign =  a[1][23];
+            listVAlign =  a[1][24];
           }
 
           for (v = 0; v < vNum2; v++) { // Cycle through rows
@@ -419,14 +583,14 @@ function drawUI() {
 
                   } else if (typeof a[x][y] === "object") { // Check if parameter is an array
 
-                    if (a[1][15] != undefined) {
+                    if (a[1][16] != undefined) {
 
-                      if (a[x][y].length < a[1][15]()) {
+                      if (a[x][y].length < a[1][16]()) {
 
                         let temp = a[x][y][1];
                         a[x][y].length = 0;
 
-                        for (z = 0; z < (a[1][15]()); z++) {
+                        for (z = 0; z < (a[1][16]()); z++) {
 
                           a[x][y].push(temp);
                         }
@@ -582,6 +746,12 @@ function drawUI() {
                   - (boxW * hAlign) + (boxW * (1 - hAlign)), ((boxH * 2) * (1 - vAlign)),
                   - ((boxW * 2) * hAlign), - (boxH * vAlign) + (boxH * (1 - vAlign)));
                   break;
+
+                  case 5: strokeCap(SQUARE); arc(0, 0, boxW, boxW, a[1][15][0], a[1][15][1]);
+                  break;
+
+                  case 6: strokeCap(SQUARE); triangle(0, - (boxH / 2), boxW / 2, boxH / 2, - (boxW / 2), boxH / 2);
+                  break;
                 }
 
               } else {
@@ -641,6 +811,11 @@ function drawUI() {
               }
 
 
+              if (a[1][14] != 0) {
+
+                angleMode(RADIANS);
+              }
+
               pop(); // Reset translate/rotation
             }
           }
@@ -664,4 +839,42 @@ function drawUI() {
       }
     }
   }
+}
+
+
+
+function createFacilityFromTemplate(prodType) {
+
+  let pTA = productionTypes[prodType][0];
+  let inter;
+
+  if (pTA[2][2] != 0) {
+    inter = [pTA[2][2][0], pTA[2][2][1], 1, pTA[2][2][0]];
+  } else { inter = 0; }
+
+  let tempA = [
+    prodType,
+    [
+      1,
+      1,
+      1,
+      pTA[2][0],
+      pTA[2][1],
+      inter,
+      0
+    ],
+    [
+      0
+    ]
+  ];
+
+  return tempA;
+}
+
+
+
+function createTestFacilities() {
+
+  production.push(createFacilityFromTemplate(0));
+  production.push(createFacilityFromTemplate(1));
 }
