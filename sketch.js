@@ -3,6 +3,8 @@
 // General
 
 state = 1; // 0 = menu, 1 = game, 2 = settings
+gameState = 0;
+uiState = 0; // 0 = normal, 1 = build menu open
 uiLoaded = 0;
 uiHover = 0;
 uiHover2 = "";
@@ -21,6 +23,7 @@ demand = 8;
 power = 0;
 money = 100;
 income = 0;
+cost = 0;
 profit = 0;
 publicRage = 0;
 price = 10;
@@ -35,6 +38,7 @@ batteryStatus = 0;
 batteryCapacity = 1000;
 batteryCharge = 0;
 batteryInOut = 0;
+batteryOutPerc = 0;
 
 cellSize = 0;
 xRes = 0;
@@ -70,6 +74,7 @@ production = [
       TBD
   */
 ];
+productionTypes = [];
 
 intermittentSources = [];
 
@@ -85,6 +90,9 @@ function preload() {
   fontBold = loadFont('assets/Lora-Bold.ttf');
   fontMedium = loadFont('assets/Lora-Medium.ttf');
   fontSemibold = loadFont('assets/Lora-SemiBold.ttf');
+  solarIcon = loadImage('assets/solar-icon.svg');
+  hydroIcon = loadImage('assets/hydro-icon.svg');
+  batteryIcon = loadImage('assets/battery-icon.svg');
 
   latoRegular = loadFont('assets/Lato-Regular.ttf');
   latoBold = loadFont('assets/Lato-Bold.ttf');
@@ -99,9 +107,9 @@ function setup() {
     /*
       0 - Default
         0 - Info
-          1 - - Name
-          2 - Colour
-          3 - Icon
+          0 - - Name
+          1 - Colour
+          2 - Icon
         1 - Build details
           0 - Cost
           1 - Impact
@@ -119,7 +127,7 @@ function setup() {
 
       [ // Default
 
-        ["Coal Plant", color(0, 0, 0), 0],
+        ["Coal Plant", color(0, 0, 0), solarIcon],
         [100, 0, 300],
         [5, 6, 0, 0]
       ]
@@ -129,7 +137,7 @@ function setup() {
 
       [ // Default
 
-        ["Wind Farm", color(140, 198, 63), 0],
+        ["Wind Farm", color(140, 198, 63), hydroIcon],
         [100, 0, 300],
         [5, 8, [180, 90], 0]
       ]
@@ -152,20 +160,12 @@ function setup() {
   script.src = 'ui.js';
   document.head.appendChild(script);
 
-
-  for (let i = 0; i < production.length; i++) { // Loop through production facilities
-
-    if (production[i][1][5] != 0) { // Check if intermittent
-
-      intermittentSources.push(i);
-    }
-  }
-
   colours = [
-    color(0, 0, 0),
-    color(57, 181, 74),
-    color(237, 28, 36),
-    color(131, 204, 138)
+    color(0, 0, 0), // Black
+    color(57, 181, 74), // Green
+    color(237, 28, 36), // Red
+    color(131, 204, 138), // Lighter Green (Power Overcharge)
+    color(46, 49, 146) // Purple (Battery)
   ]
 }
 
@@ -184,14 +184,22 @@ function mouseClicked() {
 
     if (hoveringOnFacility > -1) {
 
+      // Clicked on existing power plant
+
       production.splice(hoveringOnFacility, 1);
       hoveringOnFacility = -1;
     }
 
     if (hoveringOnNewFacility == 1) {
 
-      production.push(createFacilityFromTemplate(1));
-      intermittentSources.push(production.length - 1);
+      // Adding new power plant
+
+      // Open build menu
+
+      uiState = 1;
+
+      /*production.push(createFacilityFromTemplate(1));
+      intermittentSources.push(production.length - 1);*/
       hoveringOnFacility = 0;
     }
 
@@ -223,6 +231,7 @@ function draw() {
 
   power = 0;
   produced = 0;
+  producedPerc = 0;
   powerPerc = 0;
   income = 0;
   profit = 0;
@@ -230,12 +239,13 @@ function draw() {
   batteryStatus = 0;
   batteryIn = 0;
   batteryOut = 0;
+  batteryInPerc = 0;
+  batteryOutPerc = 0;
+  cost = 0;
 
 
 
   // Simulation stuff
-
-  let cost = 0;
 
   for (let i = 0; i < production.length; i++) { // Loop through production facilities
 
@@ -276,8 +286,11 @@ function draw() {
   //greenScore = round((greenScore / power) * 100); // Calculate total green score (%)
   income = powerUsed * price; // Calculate total income ($/h)
   profit = income - cost;
+  producedPerc = round((produced / demand) * 100);
   powerPerc = round((power / demand) * 100); // Convert power to percentage
   money += profit; // Increase money by income ($/h)
+  batteryInPerc = round((batteryIn / demand) * 100);
+  batteryOutPerc = round((batteryOut / demand) * 100);
 
 
 
@@ -301,20 +314,6 @@ function draw() {
       publicRage -= 0.005; // This should be made dynamic based on level/frequency of outage(s)
     }
   }
-
-  textAlign(RIGHT, CENTER);
-  fill(0, 180, 0);
-  if (money < 0) { fill(200, 0, 0); }
-  text("Money: " + "$" + money, width - 100, (height / 2) - 50);
-
-  fill(0);
-  text("Income: " + "$" + income + "/h", width - 100, (height / 2));
-
-  text("Costs: " + "$" + cost + "/h", width - 100, (height / 2) + 50);
-
-  fill(0, 180, 0);
-  if (profit < 0) { fill(200, 0, 0); }
-  text("Profit: " + "$" + profit + "/h", width - 100, (height / 2) + 100);
 
 
   // Production
@@ -356,12 +355,12 @@ function draw() {
 
         // Draw text and box fill
 
-        fill(productionTypes[production[i][0]][0][0][1]);
-        if (production[i][1][1] == 0) { fill(230); }
+        fill(productionTypes[production[prod][0]][0][0][1]);
+        if (production[prod][1][1] == 0) { fill(230); }
         noStroke();
         rect(startX + (cellSize * i) + (cellSize / 4), startY + (cellSize * y) + (cellSize / 4), (cellSize / 2),  (cellSize / 2));
 
-        let p = production[i][1][5];
+        let p = production[prod][1][5];
         let off = 0;
         let rev = (p[2] * -1) + 1;
         let barSize = cellSize / 2;
@@ -372,10 +371,10 @@ function draw() {
 
         fill(255);
         textSize(20);
-        text(production[i][1][3], xx, yy - (cellSize / 32));
+        text(production[prod][1][3], xx, yy - (cellSize / 32));
         fill(0);
         textSize(13);
-        text("$" + production[i][1][4] + "/MWh", xx, yy - ((cellSize / 8) * 3));
+        text("$" + production[prod][1][4] + "/MWh", xx, yy - ((cellSize / 8) * 3));
 
         // Draw box outline
 
@@ -432,16 +431,6 @@ function draw() {
 
     hoveringOnFacility = -1;
   }
-
-
-  // General
-
-  textAlign(LEFT, CENTER);
-  textSize(28);
-  fill(0);
-  noStroke();
-  text("Climate Target Date: " + round(timer) + "%", 20, 50);
-  text("Carbon Neutral Sources: " + greenScore + "%", 20, 100);
 
 
   // Update intermittent sources
@@ -583,7 +572,9 @@ function drawUI() {
 
                   } else if (typeof a[x][y] === "object") { // Check if parameter is an array
 
-                    if (a[1][16] != undefined) {
+                    /*if (a[1][16] != undefined) {
+
+                      console.log(a[1][16]);
 
                       if (a[x][y].length < a[1][16]()) {
 
@@ -595,7 +586,7 @@ function drawUI() {
                           a[x][y].push(temp);
                         }
                       }
-                    }
+                    }*/
                   }
                 }
               }
@@ -868,13 +859,18 @@ function createFacilityFromTemplate(prodType) {
     ]
   ];
 
-  return tempA;
+  production.push(tempA);
+
+  if (inter != 0) {
+
+    intermittentSources.push(production.length - 1);
+  }
 }
 
 
 
 function createTestFacilities() {
 
-  production.push(createFacilityFromTemplate(0));
-  production.push(createFacilityFromTemplate(1));
+  createFacilityFromTemplate(0);
+  createFacilityFromTemplate(1);
 }
