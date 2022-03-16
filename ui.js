@@ -2866,7 +2866,7 @@ ui = [
 
         [ // /* 01 */ Box
 
-          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 00 */ 0, // state (0 = off, 1 = on)
           /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
           /* 02 */ (width / 2) + (cellSize), // x pos
           /* 03 */ (height / 2) - (cellSize), // y pos
@@ -2885,7 +2885,7 @@ ui = [
 
         [ // /* 02 */ Text
 
-          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 00 */ 0, // state (0 = off, 1 = on)
           /* 01 */ function() { return "D E M A N D :  " + demand + " MWh"; }, // text
           /* 02 */ 15, // text-size
           /* 03 */ 0, // text-colour

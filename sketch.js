@@ -49,6 +49,19 @@ yOff = 0;
 hoveringOnFacility = -1;
 hoveringOnNewFacility = 0;
 
+// History
+
+tickRate = 10;
+tickRateTimer = 0;
+dataHistory = [];
+tempHistory = [[], [], [], []];
+tempDemand = 0;
+tempProduced = 0;
+tempBatteryIn = 0;
+tempBatteryOut = 0;
+chartMax = 0;
+chartMaxPoints = 100;
+
 colours = [];
 
 
@@ -159,6 +172,9 @@ function setup() {
   };
   script.src = 'ui.js';
   document.head.appendChild(script);
+
+  graphImg = createGraphics(cellSize * 5, cellSize * 2);
+  graphImg.background(255);
 
   colours = [
     color(0, 0, 0), // Black
@@ -459,12 +475,201 @@ function draw() {
   }
 
 
+
+  timer += timerSpd;
+
+
+  // History
+
+
+  // Update History
+
+  // Every frame
+
+  tempHistory[0].push(demand);
+  tempHistory[1].push(produced);
+  tempHistory[2].push(batteryIn);
+  tempHistory[3].push(batteryOut);
+
+  tickRateTimer++;
+
+  image(graphImg, (width / 2) + (cellSize), (height / 2) - (cellSize));
+
+  // Every tick
+
+  if (tickRateTimer == tickRate) {
+
+    // Push data to history array
+
+    tempDemand = 0;
+    tempProduced = 0;
+    tempBatteryIn = 0;
+    tempBatteryOut = 0;
+
+    for (let i = 0; i < tickRate; i++) {
+
+      tempDemand += tempHistory[0][i];
+      tempProduced += tempHistory[1][i];
+      tempBatteryIn += tempHistory[2][i];
+      tempBatteryOut += tempHistory[3][i];
+    }
+
+    tempDemand = tempDemand / tickRate;
+    tempProduced = tempProduced / tickRate;
+    tempBatteryIn = tempBatteryIn / tickRate;
+    tempBatteryOut = tempBatteryOut / tickRate;
+
+    if (tempDemand > chartMax) { chartMax = tempDemand; }
+    if (tempProduced > chartMax) { chartMax = tempProduced; }
+
+    console.log("History Updated");
+
+    dataHistory.push([tempDemand, tempProduced, tempBatteryIn, tempBatteryOut]);
+
+    if (dataHistory.length > chartMaxPoints) { dataHistory.splice(0, 1); }
+
+    tempHistory[0].length = 0;
+    tempHistory[1].length = 0;
+    tempHistory[2].length = 0;
+    tempHistory[3].length = 0;
+
+    tickRateTimer = 0;
+
+
+    // Draw History
+
+    drawGraph();
+  }
+
+
+
   // Draw UI
 
   drawUI();
+}
 
 
-  timer += timerSpd;
+
+function drawGraph() {
+
+  // Draw History
+
+  let chartOff = cellSize / 10;
+  let chartW = cellSize * 5;
+  let chartH = (cellSize * 2) - (chartOff * 2);
+  let lineSize = chartW / (dataHistory.length - 1);
+
+  graphImg.background(255);
+
+
+  // Draw Production Fill (Green)
+
+  graphImg.fill(colours[1]);
+  graphImg.beginShape();
+
+  graphImg.vertex(0, chartH + (chartOff * 2));
+
+  for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
+
+    let xx = round(lineSize * i);
+    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][1] / chartMax)));
+
+    graphImg.vertex(xx, yy);
+  }
+
+  graphImg.vertex(chartW, chartH + (chartOff * 2));
+
+  graphImg.endShape();
+
+
+  // Draw Waste & Shortage Fill (Red)
+
+  graphImg.noStroke();
+  graphImg.fill(color('#D3A9BB'));
+  graphImg.beginShape();
+
+  for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
+
+    let xx = round(lineSize * i);
+    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][1] / chartMax)));
+
+    graphImg.vertex(xx, yy);
+  }
+
+  for (let i = (dataHistory.length - 1); i > -1; i--) { // Loop through points in history (oldest first)
+
+    let xx = round(lineSize * i);
+    let p = 0;
+    if (dataHistory[i][1] > dataHistory[i][0]) { p = min(dataHistory[i][0] + dataHistory[i][2], dataHistory[i][1]); }
+    else { p = max(dataHistory[i][0] - dataHistory[i][3], dataHistory[i][1]); }
+    let yy = round((chartH + chartOff) - (chartH * (p / chartMax)));
+
+    graphImg.vertex(xx, yy);
+  }
+
+  graphImg.endShape(CLOSE);
+
+
+  // Draw Battery Charge & Discharge Fill (Purple)
+
+  graphImg.noStroke();
+  graphImg.fill(colours[4]);
+  graphImg.beginShape();
+
+  for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
+
+    let xx = round(lineSize * i);
+    let p = 0;
+    if (dataHistory[i][1] > dataHistory[i][0]) { p = min(dataHistory[i][0] + dataHistory[i][2], dataHistory[i][1]); }
+    else { p = max(dataHistory[i][0] - dataHistory[i][3], dataHistory[i][1]); }
+    let yy = round((chartH + chartOff) - (chartH * (p / chartMax)));
+
+    graphImg.vertex(xx, yy);
+  }
+
+  for (let i = (dataHistory.length - 1); i > -1; i--) { // Loop through points in history (oldest first)
+
+    let xx = round(lineSize * i);
+    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][0] / chartMax)));
+
+    graphImg.vertex(xx, yy);
+  }
+
+  graphImg.endShape(CLOSE);
+
+
+  // Draw Production Line (Green)
+
+  graphImg.noFill();
+  graphImg.stroke(colours[1]);
+  graphImg.beginShape();
+
+  for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
+
+    let xx = round(lineSize * i);
+    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][1] / chartMax)));
+
+    graphImg.vertex(xx, yy);
+  }
+
+  graphImg.endShape();
+
+
+  // Draw Demand Line
+
+  graphImg.stroke(colours[0]);
+
+  graphImg.beginShape();
+
+  for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
+
+    let xx = round(lineSize * i);
+    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][0] / chartMax)));
+
+    graphImg.vertex(xx, yy);
+  }
+
+  graphImg.endShape();
 }
 
 
