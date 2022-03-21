@@ -4411,8 +4411,8 @@ ui = [
           /* 08 */ 0, // colour
           /* 09 */ 0, // alpha
           /* 10 */ 1, // outline (0 = no, 1 = yes)
-          /* 11 */ 230, // outline-colour
-          /* 12 */ 255, // outline-alpha
+          /* 11 */ 0, // outline-colour
+          /* 12 */ 25, // outline-alpha
           /* 13 */ 1, // outline-width
           /* 14 */ 0 // rot-angle
         ],
@@ -4420,7 +4420,7 @@ ui = [
         [ // /* 02 */ Text
 
           /* 00 */ 1, // state (0 = off, 1 = on)
-          /* 01 */ "1X", // text
+          /* 01 */ function() { return timeSpd + "X"; }, // text
           /* 02 */ 20, // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
@@ -4431,10 +4431,10 @@ ui = [
 
         [ // /* 03 */ Button Events
 
-          /* 00 */ 0, // state (0 = off, 1 = on)
-          /* 01 */ 0, // onHoverIn event (0 = no event)
-          /* 02 */ 0, // onHoverOut event (0 = no event)
-          /* 03 */ 0 // onClick event (0 = no event)
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ function() { boxOutlineOp = 255; }, // onHoverIn event (0 = no event)
+          /* 02 */ function() { }, // onHoverOut event (0 = no event)
+          /* 03 */ function() { if (timeSpd < 32) { timeSpd *= 2; } else { timeSpd = 1; } } // onClick event (0 = no event)
         ]
       ],
 
@@ -4455,8 +4455,8 @@ ui = [
           /* 08 */ 0, // colour
           /* 09 */ 0, // alpha
           /* 10 */ 1, // outline (0 = no, 1 = yes)
-          /* 11 */ 230, // outline-colour
-          /* 12 */ 255, // outline-alpha
+          /* 11 */ 0, // outline-colour
+          /* 12 */ 25, // outline-alpha
           /* 13 */ 1, // outline-width
           /* 14 */ 0 // rot-angle
         ],
@@ -4475,19 +4475,19 @@ ui = [
 
         [ // /* 03 */ Button Events
 
-          /* 00 */ 0, // state (0 = off, 1 = on)
-          /* 01 */ 0, // onHoverIn event (0 = no event)
-          /* 02 */ 0, // onHoverOut event (0 = no event)
-          /* 03 */ 0 // onClick event (0 = no event)
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ function() { boxOutlineOp = 255; }, // onHoverIn event (0 = no event)
+          /* 02 */ function() { }, // onHoverOut event (0 = no event)
+          /* 03 */ function() { gameState = (gameState * -1) + 1; } // onClick event (0 = no event)
         ],
 
         [ // /* 04 */ Image
 
           /* 00 */ 1, // state (0 = off, 1 = on)
-          /* 01 */ playIcon, // image
+          /* 01 */ function() { if (gameState) { return pauseIcon; } else { return playIcon; }}, // image
           /* 02 */ function() { return cellSize / 4; }, // image-width (or size)
           /* 03 */ function() { return cellSize / 4; }, // image-height
-          /* 04 */ 0.52, // image-h-align
+          /* 04 */ 0.5, // image-h-align
           /* 05 */ 0.5, // image-v-align
         ]
       ],

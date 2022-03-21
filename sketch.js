@@ -3,7 +3,7 @@
 // General
 
 state = 1; // 0 = menu, 1 = game, 2 = settings
-gameState = 0;
+gameState = 1;
 uiState = 0; // 0 = normal, 1 = build menu open
 uiLoaded = 0;
 uiHover = 0;
@@ -13,6 +13,7 @@ uiSelected = "undefined";
 uiScale = 1;
 buildSelected = 0;
 uiScale = 0;
+timeSpd = 1;
 
 
 // Consumption
@@ -333,11 +334,7 @@ function draw() {
 
   // Update Simulation Numbers
 
-  updateSim();
-
-  // Update History
-
-  updateHistory();
+  updateSim(timeSpd * gameState);
 
 
   // Drawing
@@ -362,119 +359,130 @@ function draw() {
 
 
 
-function updateSim() {
+function updateSim(num) {
 
-  power = 0;
-  produced = 0;
-  producedPerc = 0;
-  powerPerc = 0;
-  income = 0;
-  profit = 0;
-  greenScore = 0;
-  batteryStatus = 0;
-  batteryIn = 0;
-  batteryOut = 0;
-  batteryInOut = 0;
-  batteryInPerc = 0;
-  batteryOutPerc = 0;
-  cost = 0;
-  waste = 0;
-  moneyStr = "";
+  let n = 0;
+
+  while (n < num) {
+
+    power = 0;
+    produced = 0;
+    producedPerc = 0;
+    powerPerc = 0;
+    income = 0;
+    profit = 0;
+    greenScore = 0;
+    batteryStatus = 0;
+    batteryIn = 0;
+    batteryOut = 0;
+    batteryInOut = 0;
+    batteryInPerc = 0;
+    batteryOutPerc = 0;
+    cost = 0;
+    waste = 0;
+    moneyStr = "";
 
 
-  // Simulation stuff
+    // Simulation stuff
 
-  for (let i = 0; i < production.length; i++) { // Loop through production facilities
+    for (let i = 0; i < production.length; i++) { // Loop through production facilities
 
-    if (production[i][1][0] == 1) { // Check if enabled
+      if (production[i][1][0] == 1) { // Check if enabled
 
-      if (production[i][1][1]) { // Check if active
+        if (production[i][1][1]) { // Check if active
 
-        let preCost = production[i][1][3] * production[i][1][4];
+          let preCost = (production[i][1][3] * production[i][1][4]);
 
-        if (money > (production[i][1][4] + preCost)) { // Check if player has enough money
+          if (money > (production[i][1][4] + preCost)) { // Check if player has enough money
 
-          produced += production[i][1][3]; // Add facility output to total power
-          if (productionTypes[production[i][0]][0][0][3] == "Yes") {
-            greenScore += production[i][1][3]; // Add output to green score (if its green)
+            produced += production[i][1][3]; // Add facility output to total power
+            if (productionTypes[production[i][0]][0][0][3] == "Yes") {
+              greenScore += production[i][1][3]; // Add output to green score (if its green)
+            }
+            cost += preCost; // Add running costs to total running costs ($/h)
           }
-          cost += preCost; // Add running costs to total running costs ($/h)
+        }
+
+      } else {
+
+        // Update build timer
+
+        if (production[i][1][0] > 1) {
+
+          production[i][1][0]--;
         }
       }
+    }
+
+    power = produced;
+    powerUsed = min(demand, power);
+
+    if (power > demand) { // Overpowered
+
+      if (batteryCharge < batteryCapacity) { // Battery is not fully charged
+
+        batteryIn = min(batteryInMax, power - demand);
+        batteryCharge = min(batteryCapacity, batteryCharge + batteryIn);
+        batteryStatus = 1;
+      }
+
+      waste = power - demand - batteryIn;
+
+    } else if (power < demand) { // Underpowered
+
+      if (batteryCharge > 0) { // Battery has charge
+
+        batteryOut = min(batteryOutMax, min(demand - power, batteryCharge));
+        power += batteryOut;
+        batteryCharge -= batteryOut;
+        batteryStatus = 2;
+      }
+
+      shortage = demand - power - batteryOut;
+    }
+
+    greenScore = round((greenScore / power) * 100); // Calculate total green score (%)
+    income = powerUsed * price; // Calculate total income ($/h)
+    profit = income - cost;
+    producedPerc = round((produced / demand) * 100);
+    powerPerc = round((power / demand) * 100); // Convert power to percentage
+    money += profit; // Increase money by income ($/h)
+    batteryInPerc = round((batteryIn / demand) * 100);
+    batteryOutPerc = round((batteryOut / demand) * 100);
+    batteryInOut = batteryIn - batteryOut;
+
+    // Distribution
+
+    if (powerPerc < 100) {
+
+      publicRage += 0.01;
 
     } else {
 
-      // Update build timer
+      if (publicRage > 0) {
 
-      if (production[i][1][0] > 1) {
-
-        production[i][1][0]--;
+        publicRage -= 0.005; // This should be made dynamic based on level/frequency of outage(s)
       }
     }
+
+    // Clean up money text
+
+    moneyStr = formatNumber(money);
+
+    // Update Intermittent Sources
+
+    updateIntermittentSources();
+
+    // Update timeline timer
+
+    timer += timerSpd;
+
+    // Update History
+
+    updateHistory(timeSpd);
+
+    n++;
   }
-
-  power = produced;
-  powerUsed = min(demand, power);
-
-  if (power > demand) { // Overpowered
-
-    if (batteryCharge < batteryCapacity) { // Battery is not fully charged
-
-      batteryIn = min(batteryInMax, power - demand);
-      batteryCharge = min(batteryCapacity, batteryCharge + batteryIn);
-      batteryStatus = 1;
-    }
-
-    waste = power - demand - batteryIn;
-
-  } else if (power < demand) { // Underpowered
-
-    if (batteryCharge > 0) { // Battery has charge
-
-      batteryOut = min(batteryOutMax, min(demand - power, batteryCharge));
-      power += batteryOut;
-      batteryCharge -= batteryOut;
-      batteryStatus = 2;
-    }
-
-    shortage = demand - power - batteryOut;
-  }
-
-  greenScore = round((greenScore / power) * 100); // Calculate total green score (%)
-  income = powerUsed * price; // Calculate total income ($/h)
-  profit = income - cost;
-  producedPerc = round((produced / demand) * 100);
-  powerPerc = round((power / demand) * 100); // Convert power to percentage
-  money += profit; // Increase money by income ($/h)
-  batteryInPerc = round((batteryIn / demand) * 100);
-  batteryOutPerc = round((batteryOut / demand) * 100);
-  batteryInOut = batteryIn - batteryOut;
-
-  // Distribution
-
-  if (powerPerc < 100) {
-
-    publicRage += 0.01;
-
-  } else {
-
-    if (publicRage > 0) {
-
-      publicRage -= 0.005; // This should be made dynamic based on level/frequency of outage(s)
-    }
-  }
-
-  // Clean up money text
-
-  moneyStr = formatNumber(money);
-
-  // Update Intermittent Sources
-
-  updateIntermittentSources();
-
-  // Update timeline timer
-
-  timer += timerSpd;
 }
 
 
@@ -743,6 +751,7 @@ function drawGraph() {
     if (dataHistory[i][1] < chartMin) { chartMin = dataHistory[i][1]; }
     if (dataHistory[i][0] > chartMax) { chartMax = dataHistory[i][0]; }
     if (dataHistory[i][0] < chartMin) { chartMin = dataHistory[i][0]; }
+    if (chartMax == chartMin) { chartMin = 0; }
   }
 
   chartMax -= chartMin;
