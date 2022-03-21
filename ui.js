@@ -851,6 +851,7 @@ ui = [
         ]
       ],
 
+
       [ // /* 01 */ Distribution Background
 
         1, // /* 00 */ Type (1 = single, 2 = list)
@@ -868,7 +869,7 @@ ui = [
           /* 08 */ 0, // colour
           /* 09 */ 0, // alpha
           /* 10 */ 1, // outline (0 = no, 1 = yes)
-          /* 11 */ color(colours[1]), // outline-colour
+          /* 11 */ 240, // outline-colour
           /* 12 */ 255, // outline-alpha
           /* 13 */ 1, // outline-width
           /* 14 */ 0 // rot-angle
@@ -900,7 +901,7 @@ ui = [
 
         [ // /* 01 */ Box
 
-          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 00 */ 0, // state (0 = off, 1 = on)
           /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
           /* 02 */ gPEX + (cellSize * 9), // x pos
           /* 03 */ gPEY - (cellSize), // y pos
@@ -1155,6 +1156,432 @@ ui = [
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
+          /* 06 */ 0.5, // text-v-align
+          /* 07 */ latoRegular
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+
+      [ // /* 01 */ Consumers Price Related Happiness Icon
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ cSX + (cellSize * 2.5), // x pos
+          /* 03 */ cSY + (cellSize) - (cellSize / 1.7), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ 0, // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 0, // outline (0 = no, 1 = yes)
+          /* 11 */ 0, // outline-colour
+          /* 12 */ 0, // outline-alpha
+          /* 13 */ 0, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // text
+          /* 02 */ 0, // text-sizeBold
+          /* 03 */ 0, // text-colour
+          /* 04 */ 0, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0 // text-v-align
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ],
+
+        [ // /* 04 */ Image
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ happyIcon, // image
+          /* 02 */ function() { return cellSize / 3.2; }, // image-width (or size)
+          /* 03 */ function() { return cellSize / 3.2; }, // image-height
+          /* 04 */ 0.5, // image-h-align
+          /* 05 */ 0.5, // image-v-align
+        ]
+      ],
+
+      [ // /* 01 */ Consumers Price Related Happiness Text
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ cSX + (cellSize * 2.8), // x pos
+          /* 03 */ cSY + (cellSize) - (cellSize / 1.7) - (cellSize * 0.05), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ 0, // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 255, // colour
+          /* 09 */ 255, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ 240, // outline-colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ "DEMAND: " + demand + " MWh", // text
+          /* 02 */ 12, // text-sizeBold
+          /* 03 */ 0, // text-colour
+          /* 04 */ 255, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0.5, // text-v-align
+          /* 07 */ latoRegular
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+      [ // /* 01 */ Consumers Price Related Happiness Reason
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ cSX + (cellSize * 2.8), // x pos
+          /* 03 */ cSY + (cellSize) - (cellSize / 1.7) + (cellSize * 0.15), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ 0, // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 255, // colour
+          /* 09 */ 255, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ 240, // outline-colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ "NO RECENT OUTAGES", // text
+          /* 02 */ 8, // text-sizeBold
+          /* 03 */ 0, // text-colour
+          /* 04 */ 255, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0.5, // text-v-align
+          /* 07 */ latoRegular
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+
+      [ // /* 01 */ Consumers Price Related Happiness Icon
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ cSX + (cellSize * 2.5), // x pos
+          /* 03 */ cSY + (cellSize), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ 0, // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 0, // outline (0 = no, 1 = yes)
+          /* 11 */ 0, // outline-colour
+          /* 12 */ 0, // outline-alpha
+          /* 13 */ 0, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // text
+          /* 02 */ 0, // text-sizeBold
+          /* 03 */ 0, // text-colour
+          /* 04 */ 0, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0 // text-v-align
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ],
+
+        [ // /* 04 */ Image
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ sadIcon, // image
+          /* 02 */ function() { return cellSize / 3.2; }, // image-width (or size)
+          /* 03 */ function() { return cellSize / 3.2; }, // image-height
+          /* 04 */ 0.5, // image-h-align
+          /* 05 */ 0.5, // image-v-align
+        ]
+      ],
+
+      [ // /* 01 */ Consumers Price Related Happiness Text
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ cSX + (cellSize * 2.8), // x pos
+          /* 03 */ cSY + (cellSize) - (cellSize * 0.05), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ 0, // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 255, // colour
+          /* 09 */ 255, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ 240, // outline-colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ "PRICE: $" + price + "/MWh", // text
+          /* 02 */ 11, // text-sizeBold
+          /* 03 */ 0, // text-colour
+          /* 04 */ 255, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0.5, // text-v-align
+          /* 07 */ latoRegular
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+      [ // /* 01 */ Consumers Price Related Happiness Reason
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ cSX + (cellSize * 2.8), // x pos
+          /* 03 */ cSY + (cellSize) + (cellSize * 0.15), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ 0, // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 255, // colour
+          /* 09 */ 255, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ 240, // outline-colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ "RECENT PRICE HIKE", // text
+          /* 02 */ 8, // text-sizeBold
+          /* 03 */ 0, // text-colour
+          /* 04 */ 255, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0.5, // text-v-align
+          /* 07 */ latoRegular
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+
+      [ // /* 01 */ Consumers Price Related Happiness Icon
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ cSX + (cellSize * 2.5), // x pos
+          /* 03 */ cSY + (cellSize) + (cellSize / 1.7), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ 0, // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 0, // outline (0 = no, 1 = yes)
+          /* 11 */ 0, // outline-colour
+          /* 12 */ 0, // outline-alpha
+          /* 13 */ 0, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // text
+          /* 02 */ 0, // text-sizeBold
+          /* 03 */ 0, // text-colour
+          /* 04 */ 0, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0 // text-v-align
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ],
+
+        [ // /* 04 */ Image
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ unhappyIcon, // image
+          /* 02 */ function() { return cellSize / 3.2; }, // image-width (or size)
+          /* 03 */ function() { return cellSize / 3.2; }, // image-height
+          /* 04 */ 0.5, // image-h-align
+          /* 05 */ 0.5, // image-v-align
+        ]
+      ],
+
+      [ // /* 01 */ Consumers Price Related Happiness Text
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ cSX + (cellSize * 2.8), // x pos
+          /* 03 */ cSY + (cellSize) + (cellSize / 1.7) - (cellSize * 0.05), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ 0, // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 255, // colour
+          /* 09 */ 255, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ 240, // outline-colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ "GREEN ENERGY: " + greenScore + "%", // text
+          /* 02 */ 12, // text-sizeBold
+          /* 03 */ 0, // text-colour
+          /* 04 */ 255, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0.5, // text-v-align
+          /* 07 */ latoRegular
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+      [ // /* 01 */ Consumers Price Related Happiness Reason
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ cSX + (cellSize * 2.8), // x pos
+          /* 03 */ cSY + (cellSize) + (cellSize / 1.7) + (cellSize * 0.15), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ 0, // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 255, // colour
+          /* 09 */ 255, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ 240, // outline-colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ "OFF COURSE FOR TARGET", // text
+          /* 02 */ 8, // text-sizeBold
+          /* 03 */ 0, // text-colour
+          /* 04 */ 255, // text-alpha
+          /* 05 */ 0, // text-h-align
           /* 06 */ 0.5, // text-v-align
           /* 07 */ latoRegular
         ],
@@ -3733,7 +4160,7 @@ ui = [
         [ // /* 02 */ Text
 
           /* 00 */ 1, // state (0 = off, 1 = on)
-          /* 01 */ "34 %  G R E E N  P R O D U C T I O N", // text
+          /* 01 */ greenScore + " %   G R E E N  P R O D U C T I O N", // text
           /* 02 */ 12* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
@@ -4447,10 +4874,10 @@ ui = [
           /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
           /* 08 */ 0, // colour
           /* 09 */ 0, // alpha
-          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 10 */ 0, // outline (0 = no, 1 = yes)
           /* 11 */ 0, // outline-colour
-          /* 12 */ function() { return (((v * hNum) + h) == buildSelected) * 255; }, // outline-alpha
-          /* 13 */ 1, // outline-width
+          /* 12 */ 0, // outline-alpha
+          /* 13 */ 0, // outline-width
           /* 14 */ 0, // rot-angle
           /* 15 */ 0, // arc
 
@@ -4482,7 +4909,7 @@ ui = [
 
         [ // /* 03 */ Button Events
 
-          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 00 */ 0, // state (0 = off, 1 = on)
           /* 01 */ function() { boxOutlineOp = 255; }, // onHoverIn event (0 = no event)
           /* 02 */ function() { if ((uiSelectedIndex - 1) == buildSelected) { boxOutlineOp = 0; }; }, // onHoverOut event (0 = no event)
           /* 03 */ function() { buildSelected = (uiSelectedIndex - 1); } // onClick event (0 = no event)
@@ -4509,12 +4936,12 @@ ui = [
           /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
           /* 02 */ (width / 2) - (cellSize * 5.5), // x pos
           /* 03 */ (height / 2) - (cellSize * 3.5), // y pos
-          /* 04 */ cellSize / 2, // width
-          /* 05 */ cellSize / 2, // height
+          /* 04 */ cellSize, // width
+          /* 05 */ cellSize, // height
           /* 06 */ 0.5, // h-align (0 = left, 0.5 = centre, 1 = right)
           /* 07 */ 0.5, // v-align (0 = top, 0.5 = centre, 1 = bottom)
-          /* 08 */ function() { return productionTypes[((v * hNum) + h)][0][0][1]; }, // colour
-          /* 09 */ 255, // alpha
+          /* 08 */ 255, // colour
+          /* 09 */ function() { return 200 - ((((v * hNum) + h) == buildSelected) * 200); }, // alpha
           /* 10 */ 0, // outline (0 = no, 1 = yes)
           /* 11 */ 0, // outline-colour
           /* 12 */ 0, // outline-alpha
@@ -4549,11 +4976,11 @@ ui = [
 
         [ // /* 03 */ Button Events
 
-          /* 00 */ 0, // state (0 = off, 1 = on)
-          /* 01 */ 0, // onHoverIn event (0 = no event)
-          /* 02 */ 0, // onHoverOut event (0 = no event)
-          /* 03 */ 0 // onClick event (0 = no event)
-        ]
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ function() { boxOp = 0; }, // onHoverIn event (0 = no event)
+          /* 02 */ function() { if ((uiSelectedIndex - 1) == buildSelected) { boxOutlineOp = 0; }; }, // onHoverOut event (0 = no event)
+          /* 03 */ function() { buildSelected = (uiSelectedIndex - 1); } // onClick event (0 = no event)
+        ],
       ],
 
       [ // /* 01 */ Exit Menu Button

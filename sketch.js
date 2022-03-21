@@ -30,7 +30,7 @@ profit = 0;
 publicRage = 0;
 price = 10;
 timer = 0;
-timerSpd = 0.01;
+timerSpd = 0.001;
 greenScore = 0;
 powerPerc = 0;
 produced = 0;
@@ -64,7 +64,6 @@ tempDemand = 0;
 tempProduced = 0;
 tempBatteryIn = 0;
 tempBatteryOut = 0;
-chartMax = 0;
 chartMaxPoints = 500;
 
 colours = [];
@@ -108,8 +107,6 @@ function preload() {
   fontBold = loadFont('assets/Lora-Bold.ttf');
   fontMedium = loadFont('assets/Lora-Medium.ttf');
   fontSemibold = loadFont('assets/Lora-SemiBold.ttf');
-  solarIcon = loadImage('assets/solar-icon.svg');
-  hydroIcon = loadImage('assets/hydro-icon.svg');
   batteryIcon = loadImage('assets/battery-icon.svg');
   exitIcon = loadImage('assets/exit-icon.svg');
   exitIconW = loadImage('assets/exit-icon-white.svg');
@@ -119,6 +116,15 @@ function preload() {
   sadIcon = loadImage('assets/sad-icon.svg');
   unhappyIcon = loadImage('assets/unhappy-icon.svg');
   happyIcon = loadImage('assets/happy-icon.svg');
+
+  oilIcon = loadImage('assets/oil-icon.svg');
+  coalIcon = loadImage('assets/coal-icon.svg');
+  gasIcon = loadImage('assets/natural-gas-icon.svg');
+  hydroIcon = loadImage('assets/hydro-icon.svg');
+  nuclearIcon = loadImage('assets/nuclear-icon.svg');
+  windIcon = loadImage('assets/wind-icon.svg');
+  solarIcon = loadImage('assets/solar-icon.svg');
+  biofuelIcon = loadImage('assets/biofuel-icon.svg');
 
   latoRegular = loadFont('assets/Lato-Regular.ttf');
   latoBold = loadFont('assets/Lato-Bold.ttf');
@@ -154,7 +160,7 @@ function setup() {
 
       [ // Default
 
-        ["Oil", color(0, 0, 0), solarIcon, "No"],
+        ["Oil", color(0, 0, 0), oilIcon, "No"],
         [10000, 0, 300],
         [5, 6, 0, 0]
       ]
@@ -164,7 +170,7 @@ function setup() {
 
       [ // Default
 
-        ["Coal", color(83, 71, 65), hydroIcon, "No"],
+        ["Coal", color(83, 71, 65), coalIcon, "No"],
         [100, 0, 300],
         [5, 8, 0, 0]
       ]
@@ -174,7 +180,7 @@ function setup() {
 
       [ // Default
 
-        ["Natural Gas", color(198, 156, 109), hydroIcon, "No"],
+        ["Natural Gas", color(198, 156, 109), gasIcon, "No"],
         [100, 0, 300],
         [5, 8, 0, 0]
       ]
@@ -194,7 +200,7 @@ function setup() {
 
       [ // Default
 
-        ["Nuclear", color(46, 49, 146), hydroIcon, "Yes"],
+        ["Nuclear", color(46, 49, 146), nuclearIcon, "Yes"],
         [100, 0, 300],
         [5, 8, 0, 0]
       ]
@@ -204,7 +210,7 @@ function setup() {
 
       [ // Default
 
-        ["Wind", color(140, 198, 63), hydroIcon, "Yes"],
+        ["Wind", color(140, 198, 63), windIcon, "Yes"],
         [100, 0, 300],
         [5, 8, [180, 90], 0]
       ]
@@ -224,7 +230,7 @@ function setup() {
 
       [ // Default
 
-        ["Biofuel", color(0, 104, 55), hydroIcon, "No"],
+        ["Biofuel", color(0, 104, 55), biofuelIcon, "No"],
         [100, 0, 300],
         [5, 8, 0, 0]
       ]
@@ -389,7 +395,9 @@ function updateSim() {
         if (money > (production[i][1][4] + preCost)) { // Check if player has enough money
 
           produced += production[i][1][3]; // Add facility output to total power
-          //greenScore += (production[i][1][2] * production[i][4]); // Add output to green score (if its green)
+          if (productionTypes[production[i][0]][0][0][3] == "Yes") {
+            greenScore += production[i][1][3]; // Add output to green score (if its green)
+          }
           cost += preCost; // Add running costs to total running costs ($/h)
         }
       }
@@ -432,7 +440,7 @@ function updateSim() {
     shortage = demand - power - batteryOut;
   }
 
-  //greenScore = round((greenScore / power) * 100); // Calculate total green score (%)
+  greenScore = round((greenScore / power) * 100); // Calculate total green score (%)
   income = powerUsed * price; // Calculate total income ($/h)
   profit = income - cost;
   producedPerc = round((produced / demand) * 100);
@@ -541,8 +549,8 @@ function updateHistory() {
     tempBatteryIn = tempBatteryIn / tickRate;
     tempBatteryOut = tempBatteryOut / tickRate;
 
-    if (tempDemand > chartMax) { chartMax = tempDemand; }
-    if (tempProduced > chartMax) { chartMax = tempProduced; }
+    //if (tempDemand > chartMax) { chartMax = tempDemand; }
+    //if (tempProduced > chartMax) { chartMax = tempProduced; }
 
     dataHistory.push([tempDemand, tempProduced, tempBatteryIn, tempBatteryOut]);
 
@@ -613,9 +621,9 @@ function drawProductionFacilities() {
 
           // Draw text and box fill
 
-          //image(productionTypes[production[prod][0]][0][0][2], startX + (cellSize * i) + (cellSize / 4), startY + (cellSize * y) + (cellSize / 4), cellSize / 2, cellSize / 2);
-          fill(productionTypes[production[prod][0]][0][0][1]);
-          rect(startX + (cellSize * i) + (cellSize / 4) - 1, startY + (cellSize * y) + (cellSize / 4) - 1, (cellSize / 2) + 2, (cellSize / 2) + 2);
+          image(productionTypes[production[prod][0]][0][0][2], startX + (cellSize * i) + (cellSize / 4), startY + (cellSize * y) + (cellSize / 4), cellSize / 2, cellSize / 2);
+          //fill(productionTypes[production[prod][0]][0][0][1]);
+          //rect(startX + (cellSize * i) + (cellSize / 4) - 1, startY + (cellSize * y) + (cellSize / 4) - 1, (cellSize / 2) + 2, (cellSize / 2) + 2);
           noStroke();
           if (production[prod][1][1] == 0) {
 
@@ -726,10 +734,23 @@ function drawGraph() {
 
   graphImg.vertex(0, chartH + (chartOff * 2));
 
+  let chartMax = 0;
+  let chartMin = dataHistory[0][1];
+
+  for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
+
+    if (dataHistory[i][1] > chartMax) { chartMax = dataHistory[i][1]; }
+    if (dataHistory[i][1] < chartMin) { chartMin = dataHistory[i][1]; }
+    if (dataHistory[i][0] > chartMax) { chartMax = dataHistory[i][0]; }
+    if (dataHistory[i][0] < chartMin) { chartMin = dataHistory[i][0]; }
+  }
+
+  chartMax -= chartMin;
+
   for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
 
     let xx = round(lineSize * i);
-    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][1] / chartMax)));
+    let yy = round((chartH + chartOff) - (chartH * ((dataHistory[i][1] - chartMin) / chartMax)));
 
     graphImg.vertex(xx, yy);
   }
@@ -748,7 +769,7 @@ function drawGraph() {
   for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
 
     let xx = round(lineSize * i);
-    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][1] / chartMax)));
+    let yy = round((chartH + chartOff) - (chartH * ((dataHistory[i][1] - chartMin) / chartMax)));
 
     graphImg.vertex(xx, yy);
   }
@@ -757,8 +778,8 @@ function drawGraph() {
 
     let xx = round(lineSize * i);
     let p = 0;
-    if (dataHistory[i][1] > dataHistory[i][0]) { p = min(dataHistory[i][0] + dataHistory[i][2], dataHistory[i][1]); }
-    else { p = max(dataHistory[i][0] - dataHistory[i][3], dataHistory[i][1]); }
+    if (dataHistory[i][1] > dataHistory[i][0]) { p = min(dataHistory[i][0] + dataHistory[i][2], dataHistory[i][1]) - chartMin; }
+    else { p = max(dataHistory[i][0] - dataHistory[i][3], dataHistory[i][1]) - chartMin; }
     let yy = round((chartH + chartOff) - (chartH * (p / chartMax)));
 
     graphImg.vertex(xx, yy);
@@ -779,8 +800,8 @@ function drawGraph() {
 
     let xx = round(lineSize * i);
     let p = 0;
-    if (dataHistory[i][1] > dataHistory[i][0]) { p = min(dataHistory[i][0] + dataHistory[i][2], dataHistory[i][1]); }
-    else { p = max(dataHistory[i][0] - dataHistory[i][3], dataHistory[i][1]); }
+    if (dataHistory[i][1] > dataHistory[i][0]) { p = min(dataHistory[i][0] + dataHistory[i][2], dataHistory[i][1]) - chartMin; }
+    else { p = max(dataHistory[i][0] - dataHistory[i][3], dataHistory[i][1]) - chartMin; }
     let yy = round((chartH + chartOff) - (chartH * (p / chartMax)));
 
     graphImg.vertex(xx, yy);
@@ -789,7 +810,7 @@ function drawGraph() {
   for (let i = (dataHistory.length - 1); i > -1; i--) { // Loop through points in history (oldest first)
 
     let xx = round(lineSize * i);
-    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][0] / chartMax)));
+    let yy = round((chartH + chartOff) - (chartH * ((dataHistory[i][0] - chartMin) / chartMax)));
 
     graphImg.vertex(xx, yy);
   }
@@ -807,7 +828,7 @@ function drawGraph() {
   for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
 
     let xx = round(lineSize * i);
-    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][1] / chartMax)));
+    let yy = round((chartH + chartOff) - (chartH * ((dataHistory[i][1] - chartMin) / chartMax)));
 
     graphImg.vertex(xx, yy);
   }
@@ -824,7 +845,7 @@ function drawGraph() {
   for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
 
     let xx = round(lineSize * i);
-    let yy = round((chartH + chartOff) - (chartH * (dataHistory[i][0] / chartMax)));
+    let yy = round((chartH + chartOff) - (chartH * ((dataHistory[i][0] - chartMin) / chartMax)));
 
     graphImg.vertex(xx, yy);
   }
@@ -834,7 +855,7 @@ function drawGraph() {
 
   // Draw Power Line
 
-  let yy = round((chartH + chartOff) - (chartH * (dataHistory[dataHistory.length - 1][1] / chartMax)));
+  let yy = round((chartH + chartOff) - (chartH * ((dataHistory[dataHistory.length - 1][1] - chartMin) / chartMax)));
 
   graphImg.stroke(colours[1]);
   graphImg.line(chartW, yy, graphImg.width, yy);
@@ -848,8 +869,8 @@ function drawGraph() {
   graphImg.textSize(10);
   graphImg.textAlign(LEFT, CENTER);
 
-  graphImg.text("0 MWh", chartW + 10, chartH + chartOff + 10);
-  graphImg.text(chartMax + " MWh", chartW + 10, chartOff - 10);
+  graphImg.text(chartMin + " MWh", chartW + 10, chartH + chartOff + 10);
+  graphImg.text((chartMax + chartMin) + " MWh", chartW + 10, chartOff - 10);
 
   //graphImg.text(dataHistory[dataHistory.length - 1][0] + " MWh", chartW + 10, yy);
 }
