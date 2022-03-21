@@ -127,7 +127,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "2022", // text
-          /* 02 */ 13, // text-size
+          /* 02 */ 13 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -171,7 +171,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "2040", // text
-          /* 02 */ 13, // text-size
+          /* 02 */ 13 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 1, // text-h-align
@@ -215,7 +215,7 @@ ui = [
 
           /* 00 */ function() { return ((timer > 5) && (timer < 95)) }, // state (0 = off, 1 = on)
           /* 01 */ function() { return min(round(2022 + ((18 / 100) * timer)), 2040); }, // text
-          /* 02 */ 13, // text-size
+          /* 02 */ 13 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -260,13 +260,12 @@ ui = [
         [ // /* 02 */ Text
 
           /* 00 */ 0, // state (0 = off, 1 = on)
-          /* 01 */ "D I S T R I B U T I O N", // text
-          /* 02 */ 15, // text-size
+          /* 01 */ 0, // text
+          /* 02 */ 0, // text-size
           /* 03 */ 0, // text-colour
-          /* 04 */ 255, // text-alpha
-          /* 05 */ 0.5, // text-h-align
-          /* 06 */ 0.5, // text-v-align
-          /* 07 */ latoRegular
+          /* 04 */ 0, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0 // text-v-align
         ],
 
         [ // /* 03 */ Button Events
@@ -357,7 +356,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "D E M A N D", // text
-          /* 02 */ 9, // text-size
+          /* 02 */ 9 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 1, // text-h-align
@@ -444,7 +443,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "S T O R E D", // text
-          /* 02 */ 9, // text-size
+          /* 02 */ 9 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -531,7 +530,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "W A S T E D", // text
-          /* 02 */ 9, // text-size
+          /* 02 */ 9 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -618,7 +617,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "F R O M  S T O R A G E", // text
-          /* 02 */ 9, // text-size
+          /* 02 */ 9 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -705,7 +704,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "S H O R T A G E", // text
-          /* 02 */ 9, // text-size
+          /* 02 */ 9 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -792,7 +791,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "S U P P L I E D", // text
-          /* 02 */ 9, // text-size
+          /* 02 */ 9 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -1152,7 +1151,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "C O N S U M E R S", // text
-          /* 02 */ 12, // text-sizeBold
+          /* 02 */ 12 * uiScale , // text-sizeBold
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -1373,7 +1372,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return producedPerc + "%"; }, // text
-          /* 02 */ 42, // text-size
+          /* 02 */ 42 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -1460,7 +1459,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "P R O D U C E D", // text
-          /* 02 */ 12, // text-size
+          /* 02 */ 12 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -1764,7 +1763,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return (produced + " MWh"); }, // text
-          /* 02 */ 11, // text-size
+          /* 02 */ 11 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -2069,7 +2068,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return (waste + " MWh Wasted"); }, // text
-          /* 02 */ 11, // text-size
+          /* 02 */ 11 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -2283,7 +2282,7 @@ ui = [
           /* 12 */ 125, // outline-alpha
           /* 13 */ 8, // outline-width
           /* 14 */ 0, // rot-angle
-          /* 15 */ function() { return [(((min(producedPerc, 100) + 1) / 50) *  PI) - (PI / 2), ((min(producedPerc + batteryOutPerc - 100, 100) / 50) *  PI) - (PI / 2)]; } // arc-start-and-stop
+          /* 15 */ function() { return [(((min(producedPerc, 100) + 0) / 50) *  PI) - (PI / 2), ((min(producedPerc + batteryOutPerc - 100, 100) / 50) *  PI) - (PI / 2)]; } // arc-start-and-stop
         ],
 
         [ // /* 02 */ Text
@@ -2333,7 +2332,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return min(powerPerc, 100) + "%"; }, // text
-          /* 02 */ 42, // text-size
+          /* 02 */ 42* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -2420,7 +2419,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "P O W E R E D", // text
-          /* 02 */ 12, // text-size
+          /* 02 */ 12 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -2725,7 +2724,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return (powerUsed + " MWh"); }, // text
-          /* 02 */ 11, // text-size
+          /* 02 */ 11* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -2814,7 +2813,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { if (batteryIn > 0) { return "C H A R G I N G"} else if (batteryOut > 0) { return "D I S C H A R G I N G" } else { return " O F F"} }, // textBold
-          /* 02 */ 13, // text-sizeBold
+          /* 02 */ 13 * uiScale , // text-sizeBold
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -2911,7 +2910,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return (batteryCharge + " / " + batteryCapacity + " (MWh)"); }, // text
-          /* 02 */ 11, // text-size
+          /* 02 */ 11 * uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -3473,7 +3472,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return (abs(batteryInOut) + " MWh"); }, // text
-          /* 02 */ 11, // text-size
+          /* 02 */ 11 * uiScale, // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -3691,7 +3690,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "B E C O M E  C A R B O N  N E U T R A L", // text
-          /* 02 */ 14, // text-size
+          /* 02 */ 14* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -3735,7 +3734,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "34 %  G R E E N  P R O D U C T I O N", // text
-          /* 02 */ 12, // text-size
+          /* 02 */ 12* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -3823,7 +3822,7 @@ ui = [
 
           /* 00 */ 0, // state (0 = off, 1 = on)
           /* 01 */ "1X", // text
-          /* 02 */ 18, // text-size
+          /* 02 */ 18* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -3877,7 +3876,7 @@ ui = [
 
           /* 00 */ 0, // state (0 = off, 1 = on)
           /* 01 */ "1X", // text
-          /* 02 */ 18, // text-size
+          /* 02 */ 18* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -3931,7 +3930,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "?", // text
-          /* 02 */ 26, // text-size
+          /* 02 */ 26* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -3977,7 +3976,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "$" + moneyStr; }, // text
-          /* 02 */ 34, // text-size
+          /* 02 */ 34* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4021,7 +4020,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "$" + income + " / h"; }, // text
-          /* 02 */ 12, // text-size
+          /* 02 */ 12* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4065,7 +4064,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "$" + cost + " / h"; }, // text
-          /* 02 */ 12, // text-size
+          /* 02 */ 12* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4109,7 +4108,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "$" + profit + " / h"; }, // text
-          /* 02 */ 12, // text-size
+          /* 02 */ 12* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4416,7 +4415,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return (productionTypes[buildSelected][0][0][0]); }, // text
-          /* 02 */ 42, // text-size
+          /* 02 */ 42* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4637,7 +4636,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "P R O J E C T E D   R E S U L T S", // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -4681,7 +4680,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ "B U I L D", // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ function() { return 25 + ((money > productionTypes[buildSelected][0][1][0]) * 230); }, // text-alpha
           /* 05 */ 0.5, // text-h-align
@@ -4725,7 +4724,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "Build Cost: $" + productionTypes[buildSelected][0][1][0]; }, // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4769,7 +4768,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "Build Time: " + productionTypes[buildSelected][0][1][2] + " years"; }, // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4813,7 +4812,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "Public Opinion: " + productionTypes[buildSelected][0][1][1] + "%"; }, // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4857,7 +4856,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "Green: " + productionTypes[buildSelected][0][0][3]; }, // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4901,7 +4900,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "Operational Cost: $" + productionTypes[buildSelected][0][2][1] + "/h"; }, // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4945,7 +4944,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "Max. Output: "; }, // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -4989,7 +4988,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "Min. Output: "; }, // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -5033,7 +5032,7 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { return "Avg. Output: (estimated)"; }, // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0, // text-h-align
@@ -5122,7 +5121,7 @@ ui = [
 
           /* 00 */ 0, // state (0 = off, 1 = on)
           /* 01 */ "D I S T R I B U T I O N", // text
-          /* 02 */ 15, // text-size
+          /* 02 */ 15* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
           /* 05 */ 0.5, // text-h-align

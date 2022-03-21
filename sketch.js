@@ -12,11 +12,12 @@ elementID = "";
 uiSelected = "undefined";
 uiScale = 1;
 buildSelected = 0;
+uiScale = 0;
 
 
 // Consumption
 
-demand = 8;
+demand = 80;
 
 
 // Other
@@ -41,8 +42,8 @@ batteryCapacity = 1000;
 batteryCharge = 0;
 batteryInOut = 0;
 batteryOutPerc = 0;
-batteryInMax = 3;
-batteryOutMax = 1;
+batteryInMax = 10;
+batteryOutMax = 10;
 
 cellSize = 0;
 xRes = 0;
@@ -165,7 +166,7 @@ function setup() {
 
         ["Coal", color(83, 71, 65), hydroIcon, "No"],
         [100, 0, 300],
-        [5, 8, [180, 90], 0]
+        [5, 8, 0, 0]
       ]
     ],
 
@@ -175,7 +176,7 @@ function setup() {
 
         ["Natural Gas", color(198, 156, 109), hydroIcon, "No"],
         [100, 0, 300],
-        [5, 8, [180, 90], 0]
+        [5, 8, 0, 0]
       ]
     ],
 
@@ -195,7 +196,7 @@ function setup() {
 
         ["Nuclear", color(46, 49, 146), hydroIcon, "Yes"],
         [100, 0, 300],
-        [5, 8, [180, 90], 0]
+        [5, 8, 0, 0]
       ]
     ],
 
@@ -225,7 +226,7 @@ function setup() {
 
         ["Biofuel", color(0, 104, 55), hydroIcon, "No"],
         [100, 0, 300],
-        [5, 8, [180, 90], 0]
+        [5, 8, 0, 0]
       ]
     ],
   ]
@@ -246,6 +247,7 @@ function setup() {
   script.src = 'ui.js';
   document.head.appendChild(script);
 
+  uiScale = min(width, height) / 1080;
   setUIVariables();
 
   graphImg = createGraphics(gPW, gPH);
@@ -382,9 +384,14 @@ function updateSim() {
 
       if (production[i][1][1]) { // Check if active
 
-        produced += production[i][1][3]; // Add facility output to total power
-        //greenScore += (production[i][1][2] * production[i][4]); // Add output to green score (if its green)
-        cost += (production[i][1][3] * production[i][1][4]); // Add running costs to total running costs ($/h)
+        let preCost = production[i][1][3] * production[i][1][4];
+
+        if (money > (production[i][1][4] + preCost)) { // Check if player has enough money
+
+          produced += production[i][1][3]; // Add facility output to total power
+          //greenScore += (production[i][1][2] * production[i][4]); // Add output to green score (if its green)
+          cost += preCost; // Add running costs to total running costs ($/h)
+        }
       }
 
     } else {
@@ -1289,23 +1296,23 @@ function formatNumber(number) {
 
     } else if (num < 1000000) {
 
-      result = round((num / 1000)) + "k";
+      result = (round((num / 1000)) * num2) + "k";
 
     } else if (num < 10000000) {
 
-      result = round((num / 1000000), 2) + "m";
+      result = (round((num / 1000000), 2) * num2) + "m";
 
     } else if (num < 100000000) {
 
-      result = round((num / 1000000), 1) + "m";
+      result = (round((num / 1000000), 1) * num2) + "m";
 
     } else if (num < 1000000000) {
 
-      result = round((num / 1000000)) + "m";
+      result = (round((num / 1000000)) * num2) + "m";
 
     } else {
 
-      result = round((num / 1000000000), 1) + "b";
+      result = (round((num / 1000000000), 1) * num2) + "b";
     }
   }
 
@@ -1347,6 +1354,32 @@ function setUIVariables() {
 
 function createTestFacilities() {
 
-  createFacilityFromTemplate(0);
-  createFacilityFromTemplate(1);
+  let i = 0;
+
+  while (i < 5) {
+
+    createFacilityFromTemplate(0);
+    i++;
+  }
+  i = 0;
+
+  while (i < 4) {
+
+    createFacilityFromTemplate(1);
+    i++;
+  }
+  i = 0;
+
+  while (i < 4) {
+
+    createFacilityFromTemplate(2);
+    i++;
+  }
+  i = 0;
+
+  createFacilityFromTemplate(3);
+  createFacilityFromTemplate(4);
+  createFacilityFromTemplate(5);
+  createFacilityFromTemplate(6);
+  createFacilityFromTemplate(7);
 }
