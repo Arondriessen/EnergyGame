@@ -1597,6 +1597,222 @@ ui = [
 
       // Power Produced
 
+      [ // /* 07 */ Production to Consumption Line 1
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ pDCX - (cellSize * 0.1), // x pos
+          /* 03 */ pDCY - (cellSize * 1.5) + (cellSize * 0.1), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ (cellSize * 2), // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ function() { if (produced > 0) { return colours[1]; } else { return 205; } }, // colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // text
+          /* 02 */ 0, // text-size
+          /* 03 */ 0, // text-colour
+          /* 04 */ 0, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0 // text-v-align
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+      [ // /* 07 */ Production to Consumption Line 2
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ pDCX - (cellSize * 0.1), // x pos
+          /* 03 */ pDCY - (cellSize * 1.5) + (cellSize * 0.1), // y pos
+          /* 04 */ (cellSize * 5), // width
+          /* 05 */ 0, // height
+          /* 06 */ 1, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ function() { if (produced > 0) { return colours[1]; } else { return 205; } }, // colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // text
+          /* 02 */ 0, // text-size
+          /* 03 */ 0, // text-colour
+          /* 04 */ 0, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0 // text-v-align
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+      [ // /* 07 */ Production to Consumption Line 3
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ pDCX + (cellSize * 0.1), // x pos
+          /* 03 */ pDCY - (cellSize * 2), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ (cellSize * 2), // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ function() { if (batteryIn > 0) { return colours[1]; } else { return 205; } }, // colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // text
+          /* 02 */ 0, // text-size
+          /* 03 */ 0, // text-colour
+          /* 04 */ 0, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0 // text-v-align
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+      [ // /* 07 */ Production to Consumption Line 4
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ pDCX - (cellSize * 0.1), // x pos
+          /* 03 */ pDCY - (cellSize * 2), // y pos
+          /* 04 */ 0, // width
+          /* 05 */ (cellSize / 2) - (cellSize * 0.1), // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ function() { if (batteryOut > 0) { return colours[4]; } else { return 205; } }, // colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // text
+          /* 02 */ 0, // text-size
+          /* 03 */ 0, // text-colour
+          /* 04 */ 0, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0 // text-v-align
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+      [ // /* 07 */ Production to Consumption Line 5
+
+        1, // /* 00 */ Type (1 = single, 2 = list)
+
+        [ // /* 01 */ Box
+
+          /* 00 */ 1, // state (0 = off, 1 = on)
+          /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
+          /* 02 */ pDCX - (cellSize * 0.1), // x pos
+          /* 03 */ pDCY - (cellSize * 1.5) - (cellSize * 0.1), // y pos
+          /* 04 */ (cellSize * 5) - (cellSize * 0.2), // width
+          /* 05 */ 0, // height
+          /* 06 */ 1, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 1, // outline (0 = no, 1 = yes)
+          /* 11 */ function() { if (batteryOut > 0) { return colours[4]; } else { return 205; } }, // colour
+          /* 12 */ 255, // outline-alpha
+          /* 13 */ 1, // outline-width
+          /* 14 */ 0 // rot-angle
+        ],
+
+        [ // /* 02 */ Text
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // text
+          /* 02 */ 0, // text-size
+          /* 03 */ 0, // text-colour
+          /* 04 */ 0, // text-alpha
+          /* 05 */ 0, // text-h-align
+          /* 06 */ 0 // text-v-align
+        ],
+
+        [ // /* 03 */ Button Events
+
+          /* 00 */ 0, // state (0 = off, 1 = on)
+          /* 01 */ 0, // onHoverIn event (0 = no event)
+          /* 02 */ 0, // onHoverOut event (0 = no event)
+          /* 03 */ 0 // onClick event (0 = no event)
+        ]
+      ],
+
+
       [ // /* 01 */ Produced Circle
 
         1, // /* 00 */ Type (1 = single, 2 = list)
@@ -2514,7 +2730,7 @@ ui = [
 
       // Rest of Distribution
 
-      [ // /* 06 */ Distribution to Battery Line
+      [ // /* 28 */ Distribution to Consumption Line
 
         1, // /* 00 */ Type (1 = single, 2 = list)
 
@@ -2522,18 +2738,18 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
-          /* 02 */ bTX + (cellSize * 2), // x pos
-          /* 03 */ round(bTY + (cellSize)), // y pos
+          /* 02 */ round((width / 2) - (cellSize * 0.1)), // x pos
+          /* 03 */ round(pCY + cellSize), // y pos
           /* 04 */ 0, // width
-          /* 05 */ (cellSize / 2), // height
-          /* 06 */ 0.5, // h-align (0 = left, 0.5 = centre, 1 = right)
+          /* 05 */ (cellSize / 2) + (cellSize * 0.1), // height
+          /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
           /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
           /* 08 */ 0, // colour
           /* 09 */ 0, // alpha
           /* 10 */ 1, // outline (0 = no, 1 = yes)
-          /* 11 */ function() { if (batteryInOut != 0) { return colours[4]; } else { return 205; } }, // outline-colour
+          /* 11 */ function() { if (produced > 0) { return colours[1]; } else { return 205; } }, // colour
           /* 12 */ 255, // outline-alpha
-          /* 13 */ 1, // outline-width
+          /* 13 */ 2, // outline-width
           /* 14 */ 0 // rot-angle
         ],
 
@@ -2565,16 +2781,16 @@ ui = [
 
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ 1, // type (1 = rect, 2 = rounded rect, 3 = circle)
-          /* 02 */ round((width / 2)), // x pos
+          /* 02 */ round((width / 2) + (cellSize * 0.1)), // x pos
           /* 03 */ round(pCY + cellSize), // y pos
           /* 04 */ 0, // width
-          /* 05 */ cellSize / 2, // height
+          /* 05 */ (cellSize / 2) - (cellSize * 0.1), // height
           /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
           /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
           /* 08 */ 0, // colour
           /* 09 */ 0, // alpha
           /* 10 */ 1, // outline (0 = no, 1 = yes)
-          /* 11 */ function() { if (produced > 0) { return colours[1]; } else { return 205; } }, // colour
+          /* 11 */ function() { if (batteryOut > 0) { return colours[4]; } else { return 205; } }, // colour
           /* 12 */ 255, // outline-alpha
           /* 13 */ 2, // outline-width
           /* 14 */ 0 // rot-angle
@@ -3451,7 +3667,7 @@ ui = [
           /* 02 */ bTX + (cellSize * 2), // x pos
           /* 03 */ bTY - (cellSize * 0.7), // y pos
           /* 04 */ 0, // width
-          /* 05 */ (cellSize * 1.7), // height
+          /* 05 */ (cellSize * 1.4), // height
           /* 06 */ 0.5, // h-align (0 = left, 0.5 = centre, 1 = right)
           /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
           /* 08 */ 0, // colour

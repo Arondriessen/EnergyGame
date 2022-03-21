@@ -1348,13 +1348,13 @@ function setUIVariables() {
 
   // Power Circle
   pCX = width / 2;
-  pCY = (height / 2) - (cellSize * 2);
+  pCY = (height / 2) - (cellSize * 2.5);
   // Produced Circle
   pDCX = (width / 2) + (cellSize * 5);
   pDCY = (height / 2) + (cellSize / 2);
   // Battery
   bTX = (width / 2) + (cellSize * 3);
-  bTY = (height / 2) - (cellSize * 2);
+  bTY = (height / 2) - (cellSize * 2.5);
   // Cash Flow
   cFX = (width / 2) + (cellSize * 2);
   cFY = (height / 2) - (cellSize * 5);
@@ -1368,7 +1368,7 @@ function setUIVariables() {
   gPEY = (height / 2) + (cellSize / 2);
   // Consumers
   cSX = (width / 2) - (cellSize * 6);
-  cSY = (height / 2) - (cellSize * 3);
+  cSY = (height / 2) - (cellSize * 3.5);
 }
 
 
