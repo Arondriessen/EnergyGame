@@ -985,7 +985,7 @@ ui = [
 
       // Consumers
 
-      [ // /* 01 */ Consumers Background 1
+      [ // /* 01 */ Consumers Background + Large Icon
 
         1, // /* 00 */ Type (1 = single, 2 = list)
 
@@ -1011,7 +1011,7 @@ ui = [
         [ // /* 02 */ Text
 
           /* 00 */ 1, // state (0 = off, 1 = on)
-          /* 01 */ "U N H A P P Y", // text
+          /* 01 */ function() { return consumerIcons[floor(min(99.98, publicRage) / 33.33)][0]; }, // text
           /* 02 */ 10, // text-sizeBold
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
@@ -1031,7 +1031,7 @@ ui = [
         [ // /* 04 */ Image
 
           /* 00 */ 1, // state (0 = off, 1 = on)
-          /* 01 */ unhappyIcon, // image
+          /* 01 */ function() { return consumerIcons[floor(min(99.98, publicRage) / 33.33)][1]; }, // image
           /* 02 */ function() { return cellSize / 1.6; }, // image-width (or size)
           /* 03 */ function() { return cellSize / 1.6; }, // image-height
           /* 04 */ 0.5, // image-h-align
@@ -1533,7 +1533,7 @@ ui = [
         [ // /* 02 */ Text
 
           /* 00 */ 1, // state (0 = off, 1 = on)
-          /* 01 */ "GREEN ENERGY: " + greenScore + "%", // text
+          /* 01 */ function() { return "GREEN ENERGY: " + greenScore + "%"; }, // text
           /* 02 */ 12, // text-sizeBold
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha
@@ -4376,7 +4376,7 @@ ui = [
         [ // /* 02 */ Text
 
           /* 00 */ 1, // state (0 = off, 1 = on)
-          /* 01 */ greenScore + " %   G R E E N  P R O D U C T I O N", // text
+          /* 01 */ function() { return greenScore + " %   G R E E N  P R O D U C T I O N"; }, // text
           /* 02 */ 12* uiScale , // text-size
           /* 03 */ 0, // text-colour
           /* 04 */ 255, // text-alpha

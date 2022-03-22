@@ -68,6 +68,7 @@ tempBatteryOut = 0;
 chartMaxPoints = 500;
 
 colours = [];
+consumerIcons = [];
 
 // Production
 
@@ -268,6 +269,12 @@ function setup() {
     color(46, 49, 146), // 5 Purple (Battery)
     color(231, 244, 211), // 6 Light Green (Green Energy)
     color(247, 147, 30) // 7 Orange (Customers)
+  ]
+
+  consumerIcons = [
+    ["Satisfied", happyIcon],
+    ["Neutral", unhappyIcon],
+    ["Sad", sadIcon]
   ]
 }
 
@@ -807,10 +814,18 @@ function drawGraph() {
 
   for (let i = 0; i < dataHistory.length; i++) { // Loop through points in history (oldest first)
 
-    let xx = round(lineSize * i);
+    let prev = max(0, i - 1);
+    let xxPrev = round(lineSize * prev);
+    let pPrev = 0;
     let p = 0;
+
+    /*if (dataHistory[prev][1] > dataHistory[prev][0]) { pPrev = min(dataHistory[prev][0] + dataHistory[prev][2], dataHistory[prev][1]) - chartMin; }
+    else { pPrev = max(dataHistory[prev][0] - dataHistory[prev][3], dataHistory[prev][1]) - chartMin; }*/
     if (dataHistory[i][1] > dataHistory[i][0]) { p = min(dataHistory[i][0] + dataHistory[i][2], dataHistory[i][1]) - chartMin; }
     else { p = max(dataHistory[i][0] - dataHistory[i][3], dataHistory[i][1]) - chartMin; }
+
+    //let xx = xxPrev + (lineSize * ((pPrev / p) + 1));
+    let xx = round(lineSize * i);
     let yy = round((chartH + chartOff) - (chartH * (p / chartMax)));
 
     graphImg.vertex(xx, yy);
