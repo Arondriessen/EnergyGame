@@ -468,7 +468,7 @@ function updateSim(num) {
 
       if (publicRage > 0) {
 
-        publicRage -= 0.005; // This should be made dynamic based on level/frequency of outage(s)
+        publicRage = max(0, publicRage - 0.005); // This should be made dynamic based on level/frequency of outage(s)
       }
     }
 
@@ -914,7 +914,7 @@ function drawGrid() {
   noFill();
   stroke(245);
 
-  for (let x = 0; x < (xRes); x++) {
+  /*for (let x = 0; x < (xRes); x++) {
 
     let xx = xOff + (x * (cellSize / 2))
     line(xx, 0, xx, height);
@@ -924,7 +924,7 @@ function drawGrid() {
 
     let yy = yOff + (y * (cellSize / 2))
     line(0, yy, width, yy);
-  }
+  }*/
 }
 
 

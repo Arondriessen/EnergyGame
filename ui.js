@@ -4148,12 +4148,12 @@ ui = [
           /* 05 */ (cellSize * 1.5), // height
           /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
           /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
-          /* 08 */ 255, // colour
-          /* 09 */ 255, // alpha
-          /* 10 */ 1, // outline (0 = no, 1 = yes)
-          /* 11 */ 230, // outline-colour
-          /* 12 */ 255, // outline-alpha
-          /* 13 */ 1, // outline-width
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 0, // outline (0 = no, 1 = yes)
+          /* 11 */ 0, // outline-colour
+          /* 12 */ 0, // outline-alpha
+          /* 13 */ 0, // outline-width
           /* 14 */ 0 // rot-angle
         ],
 
@@ -4191,12 +4191,12 @@ ui = [
           /* 05 */ (cellSize * 1.5), // height
           /* 06 */ 0, // h-align (0 = left, 0.5 = centre, 1 = right)
           /* 07 */ 0, // v-align (0 = top, 0.5 = centre, 1 = bottom)
-          /* 08 */ 255, // colour
-          /* 09 */ 255, // alpha
-          /* 10 */ 1, // outline (0 = no, 1 = yes)
-          /* 11 */ 230, // outline-colour
-          /* 12 */ 255, // outline-alpha
-          /* 13 */ 1, // outline-width
+          /* 08 */ 0, // colour
+          /* 09 */ 0, // alpha
+          /* 10 */ 0, // outline (0 = no, 1 = yes)
+          /* 11 */ 0, // outline-colour
+          /* 12 */ 0, // outline-alpha
+          /* 13 */ 0, // outline-width
           /* 14 */ 0 // rot-angle
         ],
 
@@ -4434,7 +4434,7 @@ ui = [
           /* 00 */ 1, // state (0 = off, 1 = on)
           /* 01 */ function() { boxOutlineOp = 255; }, // onHoverIn event (0 = no event)
           /* 02 */ function() { }, // onHoverOut event (0 = no event)
-          /* 03 */ function() { if (timeSpd < 32) { timeSpd *= 2; } else { timeSpd = 1; } } // onClick event (0 = no event)
+          /* 03 */ function() { if (timeSpd < 128) { timeSpd *= 2; } else { timeSpd = 1; } } // onClick event (0 = no event)
         ]
       ],
 
